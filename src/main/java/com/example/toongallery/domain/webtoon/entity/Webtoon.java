@@ -1,6 +1,8 @@
 package com.example.toongallery.domain.webtoon.entity;
 
 import com.example.toongallery.domain.common.entity.BaseEntity;
+import com.example.toongallery.domain.webtoon.enums.DayOfWeek;
+import com.example.toongallery.domain.webtoon.enums.WebtoonStatus;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -25,9 +27,11 @@ public class Webtoon extends BaseEntity {
 
     private String description;//설명
 
-    private String day_of_week;//연재 요일
+    @Enumerated(EnumType.STRING)
+    private DayOfWeek day_of_week;//연재 요일
 
-    private String status;//연재 상태
+    @Enumerated(EnumType.STRING)
+    private WebtoonStatus status;//연재 상태
 
     private Double rate;//별점 평점
 
@@ -35,7 +39,7 @@ public class Webtoon extends BaseEntity {
 
     private Integer views;//조회수
 
-    public Webtoon(String title, String author, String genre, String thumbnail, String description, String day_of_week, String status, Double rate, Integer favorite_count, Integer views) {
+    public Webtoon(String title, String author, String genre, String thumbnail, String description, DayOfWeek day_of_week, WebtoonStatus status, Double rate, Integer favorite_count, Integer views) {
         this.title = title;
         this.author = author;
         this.genre = genre;
