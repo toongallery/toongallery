@@ -9,12 +9,14 @@ import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.SQLRestriction;
 
 import java.time.LocalDate;
 
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@SQLRestriction("user_status <> 'DELETE'")
 @Table(name = "users")
 public class User extends BaseEntity {
     @Id
@@ -56,5 +58,26 @@ public class User extends BaseEntity {
     }
     public static User fromAuthUser(AuthUser authUser) {
         return new User(authUser.getUserId(), authUser.getEmail(), authUser.getUserRole());
+    }
+
+
+    public void updateEmail(String email) {
+        this.email = email;
+    }
+
+    public void updateName(String name) {
+        this.name = name;
+    }
+
+    public void updateGender(Gender gender) {
+        this.gender = gender;
+    }
+
+    public void changePassword(String encodePassword) {
+        this.password = encodePassword;
+    }
+
+    public void delete() {
+        this.userStatus = UserStatus.DELETE;
     }
 }
