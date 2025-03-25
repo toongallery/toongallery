@@ -10,7 +10,6 @@ import com.example.toongallery.domain.common.exception.ErrorCode;
 import com.example.toongallery.domain.user.entity.User;
 import com.example.toongallery.domain.user.enums.Gender;
 import com.example.toongallery.domain.user.enums.UserRole;
-import com.example.toongallery.domain.user.enums.UserStatus;
 import com.example.toongallery.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -46,8 +45,7 @@ public class AuthService {
                 signupRequest.getName(),
                 signupRequest.getBirthDate(),
                 gender,
-                userRole,
-                UserStatus.ACTIVE
+                userRole
         );
         User savedUser = userRepository.save(newUser);
 
@@ -59,7 +57,7 @@ public class AuthService {
     @Transactional(readOnly = true)
     public LoginResponse login(LoginRequest loginRequest) {
         User user = userRepository.findByEmail(loginRequest.getEmail()).orElseThrow(
-                () -> new BaseException(ErrorCode.EMAIL_MISMATCH, null)); // 예외처리 수정 예정
+                () -> new BaseException(ErrorCode.EMAIL_MISMATCH, null));
 
         // 로그인 시 이메일과 비밀번호가 일치하지 않을 경우 401을 반환합니다.
         if (!passwordEncoder.matches(loginRequest.getPassword(), user.getPassword())) {

@@ -4,7 +4,6 @@ import com.example.toongallery.domain.common.dto.AuthUser;
 import com.example.toongallery.domain.common.entity.BaseEntity;
 import com.example.toongallery.domain.user.enums.Gender;
 import com.example.toongallery.domain.user.enums.UserRole;
-import com.example.toongallery.domain.user.enums.UserStatus;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -12,11 +11,12 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.SQLRestriction;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@SQLRestriction("user_status <> 'DELETE'")
+@SQLRestriction("deleted_at is null")
 @Table(name = "users")
 public class User extends BaseEntity {
     @Id
@@ -38,17 +38,16 @@ public class User extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private UserRole userRole;
 
-    @Enumerated(EnumType.STRING)
-    private UserStatus userStatus;
+    private LocalDateTime deletedAt;
 
-    public User(String email, String password, String name, LocalDate birthDate, Gender gender, UserRole userRole, UserStatus userStatus) {
+    public User(String email, String password, String name, LocalDate birthDate, Gender gender, UserRole userRole) {
         this.email = email;
         this.password = password;
         this.name = name;
         this.birthDate = birthDate;
         this.gender = gender;
         this.userRole = userRole;
-        this.userStatus = userStatus;
+        this.deletedAt = null;
     }
 
     private User(Long id, String email, UserRole userRole) {
@@ -78,6 +77,6 @@ public class User extends BaseEntity {
     }
 
     public void delete() {
-        this.userStatus = UserStatus.DELETE;
+        this.deletedAt = LocalDateTime.now();
     }
 }
