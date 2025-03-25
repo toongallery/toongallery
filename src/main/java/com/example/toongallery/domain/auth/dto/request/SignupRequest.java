@@ -1,7 +1,5 @@
 package com.example.toongallery.domain.auth.dto.request;
 
-import com.example.toongallery.domain.user.enums.Gender;
-import com.example.toongallery.domain.user.enums.UserStatus;
 import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
