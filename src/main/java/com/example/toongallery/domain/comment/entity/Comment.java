@@ -1,6 +1,7 @@
 package com.example.toongallery.domain.comment.entity;
 
 import com.example.toongallery.domain.common.entity.BaseEntity;
+import com.example.toongallery.domain.episode.entity.Episode;
 import com.example.toongallery.domain.user.entity.User;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -18,9 +19,9 @@ public class Comment extends BaseEntity {
 
     private String content;
 
-//    @ManyToOne
-//    @JoinColumn(name = "episode_id")
-//    private Episode episode;
+    @ManyToOne
+    @JoinColumn(name = "episode_id")
+    private Episode episode;
 
     @ManyToOne
     @JoinColumn(name = "user_id")
@@ -30,8 +31,8 @@ public class Comment extends BaseEntity {
     @JoinColumn(name = "parent_id")
     private Comment parent;
 
-    public Comment(/*Episode episode,*/ User user, String content, Comment parent) {
-        /*this.episode = episode;*/
+    public Comment(Episode episode, User user, String content, Comment parent) {
+        this.episode = episode;
         this.user = user;
         this.content = content;
         this.parent = parent;
