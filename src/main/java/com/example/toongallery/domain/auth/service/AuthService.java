@@ -5,6 +5,8 @@ import com.example.toongallery.domain.auth.dto.request.LoginRequest;
 import com.example.toongallery.domain.auth.dto.request.SignupRequest;
 import com.example.toongallery.domain.auth.dto.response.LoginResponse;
 import com.example.toongallery.domain.auth.dto.response.SignupResponse;
+import com.example.toongallery.domain.common.exception.BaseException;
+import com.example.toongallery.domain.common.exception.ErrorCode;
 import com.example.toongallery.domain.user.entity.User;
 import com.example.toongallery.domain.user.enums.Gender;
 import com.example.toongallery.domain.user.enums.UserRole;
@@ -14,6 +16,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+
 
 
 @Service
@@ -28,7 +32,7 @@ public class AuthService {
     public SignupResponse signup(SignupRequest signupRequest) {
 
         if (userRepository.existsByEmail(signupRequest.getEmail())) {
-            // 예외처리 추가 예정
+            throw new BaseException(ErrorCode.DUPLICATE_EMAIL, null);
         }
 
         String encodedPassword = passwordEncoder.encode(signupRequest.getPassword());
@@ -55,11 +59,11 @@ public class AuthService {
     @Transactional(readOnly = true)
     public LoginResponse login(LoginRequest loginRequest) {
         User user = userRepository.findByEmail(loginRequest.getEmail()).orElseThrow(
-                () -> new RuntimeException("가입되지 않은 유저입니다.")); // 예외처리 수정 예정
+                () -> new BaseException(ErrorCode.EMAIL_MISMATCH, null)); // 예외처리 수정 예정
 
         // 로그인 시 이메일과 비밀번호가 일치하지 않을 경우 401을 반환합니다.
         if (!passwordEncoder.matches(loginRequest.getPassword(), user.getPassword())) {
-            // 예외처리 추가 예정
+            throw new BaseException(ErrorCode.PASSWORD_MISMATCH, null);
         }
 
         String bearerToken = jwtUtil.createToken(user.getId(), user.getEmail(), user.getUserRole());
