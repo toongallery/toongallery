@@ -27,6 +27,4 @@ public class SignupRequest {
     private LocalDate birthDate;
     @NotBlank
     private String gender;
-    @NotBlank
-    private String userStatus;
 }
