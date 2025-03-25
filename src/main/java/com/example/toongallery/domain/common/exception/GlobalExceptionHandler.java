@@ -37,27 +37,13 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(ErrorResponse.of(errorDetails), HttpStatus.BAD_REQUEST);
     }
 
-    // @PathVariable이 잘못된 타입일 때 발생
-    @ExceptionHandler(MethodArgumentTypeMismatchException.class)
-    public ResponseEntity<ErrorResponse> handleTypeMismatchException(MethodArgumentTypeMismatchException ex) {
-        String requiredType = (ex.getRequiredType() != null)
-                ? ex.getRequiredType().getSimpleName()
-                : "Unknown";
-        ErrorDetail errorDetail = new ErrorDetail(
-                ex.getName(), // 파라미터 이름 (예: "id")
-                String.format("'%s'은(는) 잘못된 타입입니다. %s 타입이 필요합니다.", ex.getValue(), requiredType),
-                "TYPE_MISMATCH"
-        );
-        return new ResponseEntity<>(ErrorResponse.of(errorDetail), HttpStatus.BAD_REQUEST);
-    }
-
     // 기타 예외 처리
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponse> handleAllExceptions(Exception ex) {
         ErrorDetail errorDetail = new ErrorDetail(
-                "unknown",
+                null,
                 ex.getMessage(),
-                "INTERNAL_SERVER_ERROR"
+                ErrorCode.SERVER_NOT_WORK.name()
         );
         return new ResponseEntity<>(ErrorResponse.of(errorDetail), HttpStatus.INTERNAL_SERVER_ERROR);
     }
