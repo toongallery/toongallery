@@ -1,11 +1,15 @@
 package com.example.toongallery.domain.webtoon.entity;
 
+import com.example.toongallery.domain.author.entity.Author;
 import com.example.toongallery.domain.common.entity.BaseEntity;
 import com.example.toongallery.domain.webtoon.enums.DayOfWeek;
 import com.example.toongallery.domain.webtoon.enums.WebtoonStatus;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @Entity
@@ -19,7 +23,8 @@ public class Webtoon extends BaseEntity {
     @Column(nullable = false)
     private String title;//제목
 
-    private String author;//작가
+    @OneToMany(mappedBy = "webtoon", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Author> authors = new ArrayList<>();
 
     private String genre;//장르
 
@@ -39,16 +44,16 @@ public class Webtoon extends BaseEntity {
 
     private Integer views;//조회수
 
-    public Webtoon(String title, String author, String genre, String thumbnail, String description, DayOfWeek day_of_week, WebtoonStatus status, Double rate, Integer favorite_count, Integer views) {
+    public Webtoon(String title, String genre, String thumbnail, String description, DayOfWeek day_of_week, WebtoonStatus status) {
         this.title = title;
-        this.author = author;
         this.genre = genre;
         this.thumbnail = thumbnail;
         this.description = description;
         this.day_of_week = day_of_week;
         this.status = status;
-        this.rate = rate;
-        this.favorite_count = favorite_count;
-        this.views = views;
+    }
+
+    public void addAuthor(Author author) {
+        this.authors.add(author);
     }
 }
