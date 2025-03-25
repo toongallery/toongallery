@@ -48,4 +48,13 @@ public class User extends BaseEntity {
         this.userRole = userRole;
         this.userStatus = userStatus;
     }
+
+    private User(Long id, String email, UserRole userRole) {
+        this.id = id;
+        this.email = email;
+        this.userRole = userRole;
+    }
+    public static User fromAuthUser(AuthUser authUser) {
+        return new User(authUser.getUserId(), authUser.getEmail(), authUser.getUserRole());
+    }
 }

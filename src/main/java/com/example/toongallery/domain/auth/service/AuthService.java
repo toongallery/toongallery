@@ -18,7 +18,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
-@Transactional(readOnly = true)
 public class AuthService {
 
     private final UserRepository userRepository;
@@ -36,7 +35,6 @@ public class AuthService {
 
         UserRole userRole = UserRole.of(signupRequest.getUserRole());
         Gender gender = Gender.of(signupRequest.getGender());
-        UserStatus userStatus = UserStatus.of(signupRequest.getUserStatus());
 
         User newUser = new User(
                 signupRequest.getEmail(),
@@ -45,7 +43,7 @@ public class AuthService {
                 signupRequest.getBirthDate(),
                 gender,
                 userRole,
-                userStatus
+                UserStatus.ACTIVE
         );
         User savedUser = userRepository.save(newUser);
 
@@ -54,6 +52,7 @@ public class AuthService {
         return new SignupResponse(bearerToken);
     }
 
+    @Transactional(readOnly = true)
     public LoginResponse login(LoginRequest loginRequest) {
         User user = userRepository.findByEmail(loginRequest.getEmail()).orElseThrow(
                 () -> new RuntimeException("가입되지 않은 유저입니다.")); // 예외처리 수정 예정
