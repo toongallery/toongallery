@@ -3,6 +3,8 @@ package com.example.toongallery.domain.episode.service;
 import com.example.toongallery.domain.common.service.StorageService;
 import com.example.toongallery.domain.common.util.FileUtils;
 import com.example.toongallery.domain.episode.dto.request.EpisodeSaveRequest;
+import com.example.toongallery.domain.episode.dto.response.EpisodeDetailResponseDto;
+import com.example.toongallery.domain.episode.dto.response.EpisodeResponseDto;
 import com.example.toongallery.domain.episode.entity.Episode;
 import com.example.toongallery.domain.episode.repository.EpisodeRepository;
 import com.example.toongallery.domain.image.entity.Image;
@@ -59,4 +61,35 @@ public class EpisodeService {
         return episode;
     }
 
+    @Transactional(readOnly = true)
+    public List<EpisodeResponseDto> getEpisodesByWebtoonId(Long webtoonId) {
+        List<Episode> episodes = episodeRepository.findByWebtoonIdOrderByEpisodeNumberAsc(webtoonId);
+
+        return episodes.stream()
+                .map(e -> new EpisodeResponseDto(
+                        e.getId(),
+                        e.getTitle(),
+                        e.getEpisodeNumber(),
+                        e.getThumbnailUrl()
+                ))
+                .toList();
+    }
+
+    @Transactional(readOnly = true)
+    public EpisodeDetailResponseDto getEpisodeDetail(Long episodeId) {
+        Episode episode = episodeRepository.findById(episodeId)
+                .orElseThrow(() -> new RuntimeException("에피소드가 존재하지 않습니다."));
+
+        List<String> imageUrls = imageRepository.findByEpisodeIdOrderByImageIndexAsc(episodeId)
+                .stream()
+                .map(Image::getImageUrl)
+                .toList();
+
+        return new EpisodeDetailResponseDto(
+                episode.getId(),
+                episode.getTitle(),
+                episode.getEpisodeNumber(),
+                imageUrls
+        );
+    }
 }

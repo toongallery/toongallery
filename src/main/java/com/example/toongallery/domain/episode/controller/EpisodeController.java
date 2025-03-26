@@ -2,6 +2,8 @@ package com.example.toongallery.domain.episode.controller;
 
 
 import com.example.toongallery.domain.episode.dto.request.EpisodeSaveRequest;
+import com.example.toongallery.domain.episode.dto.response.EpisodeDetailResponseDto;
+import com.example.toongallery.domain.episode.dto.response.EpisodeResponseDto;
 import com.example.toongallery.domain.episode.entity.Episode;
 import com.example.toongallery.domain.episode.service.EpisodeService;
 import lombok.RequiredArgsConstructor;
@@ -27,5 +29,16 @@ public class EpisodeController {
     ) throws Exception {
         Episode episode = episodeService.saveEpisode(webtoonId, dto, thumbnailFile, imageFiles);
         return ResponseEntity.ok("에피소드 등록 완료 (ID: " + episode.getId() + ")");
+    }
+    @GetMapping("/webtoons/{webtoonId}/episodes")
+    public ResponseEntity<List<EpisodeResponseDto>> getEpisodes(@PathVariable Long webtoonId) {
+        List<EpisodeResponseDto> episodes = episodeService.getEpisodesByWebtoonId(webtoonId);
+        return ResponseEntity.ok(episodes);
+    }
+
+    @GetMapping("/webtoons/{webtoonId}/episodes/{episodeId}")
+    public ResponseEntity<EpisodeDetailResponseDto> getEpisodeDetail(@PathVariable Long episodeId) {
+        EpisodeDetailResponseDto detail = episodeService.getEpisodeDetail(episodeId);
+        return ResponseEntity.ok(detail);
     }
 }
