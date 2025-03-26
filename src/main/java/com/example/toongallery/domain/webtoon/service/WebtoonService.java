@@ -9,12 +9,17 @@ import com.example.toongallery.domain.user.entity.User;
 import com.example.toongallery.domain.user.enums.UserRole;
 import com.example.toongallery.domain.user.repository.UserRepository;
 import com.example.toongallery.domain.webtoon.dto.request.WebtoonSaveRequest;
+import com.example.toongallery.domain.webtoon.dto.response.WebtoonResponse;
 import com.example.toongallery.domain.webtoon.entity.Webtoon;
 import com.example.toongallery.domain.webtoon.repository.WebtoonRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -45,7 +50,6 @@ public class WebtoonService {
         if(webtoonSaveRequest.getAuthors() != null && !webtoonSaveRequest.getAuthors().isEmpty()) {
             authors = userRepository.findByNameIn(webtoonSaveRequest.getAuthors());
 
-            //추가한 작가 수 검사
             if(authors.size() != webtoonSaveRequest.getAuthors().size()) {
                 throw new BaseException(ErrorCode.USER_NOT_FOUND,null);
             }
@@ -60,8 +64,16 @@ public class WebtoonService {
             }
         }
 
+        //작가 리스트에 본인 추가
+        authors.add(mainAuthor);
+
+        List<Author> authorList = authors.stream()
+                .map(Author::new)
+                .collect(Collectors.toList());
+
         Webtoon webtoon = new Webtoon(
                 webtoonSaveRequest.getTitle(),
+                authorList,
                 webtoonSaveRequest.getGenre(),
                 webtoonSaveRequest.getThumbnail(),
                 webtoonSaveRequest.getDescription(),
@@ -70,14 +82,21 @@ public class WebtoonService {
         );
         Webtoon savedWebtoon = webtoonRepository.save(webtoon);
 
-        authors.add(mainAuthor);
-
-        List<Author> authorMapping = authors.stream()
-                .map(author->new Author(author, savedWebtoon))
-                .collect(Collectors.toList());
-
-        authorRepository.saveAll(authorMapping);
-
         return savedWebtoon;
     }
+
+//    @Transactional(readOnly = true)
+//    public Page<WebtoonResponse> getWebtoon(int page, int size) {
+//        Pageable pageable = PageRequest.of(page-1, size);
+//
+//        Page<Webtoon> webtoons = webtoonRepository.findAll(pageable);
+//
+//        return webtoons.map(webtoon -> new WebtoonResponse(
+//                webtoon.getId(),
+//                webtoon.getTitle(),
+//                webtoon.getAuthors(),
+//                webtoon.getGenre(),
+//                we
+//        ))
+//    }
 }

@@ -23,7 +23,8 @@ public class Webtoon extends BaseEntity {
     @Column(nullable = false)
     private String title;//제목
 
-    @OneToMany(mappedBy = "webtoon", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "webtoon_id")
     private List<Author> authors = new ArrayList<>();
 
     private String genre;//장르
@@ -44,16 +45,13 @@ public class Webtoon extends BaseEntity {
 
     private Integer views;//조회수
 
-    public Webtoon(String title, String genre, String thumbnail, String description, DayOfWeek day_of_week, WebtoonStatus status) {
+    public Webtoon(String title, List<Author> authors ,String genre, String thumbnail, String description, DayOfWeek day_of_week, WebtoonStatus status) {
         this.title = title;
+        this.authors = authors;
         this.genre = genre;
         this.thumbnail = thumbnail;
         this.description = description;
         this.day_of_week = day_of_week;
         this.status = status;
-    }
-
-    public void addAuthor(Author author) {
-        this.authors.add(author);
     }
 }

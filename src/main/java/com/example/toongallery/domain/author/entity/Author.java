@@ -16,17 +16,11 @@ public class Author {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "webtoon_id", nullable = false)
-    private Webtoon webtoon;
-
-    public Author(User user, Webtoon webtoon) {
+    public Author(User user) {
         this.user = user;
-        this.webtoon = webtoon;
-        webtoon.addAuthor(this);
     }
 }

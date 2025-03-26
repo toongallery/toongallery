@@ -8,7 +8,7 @@ import lombok.Getter;
 import java.util.List;
 
 @Getter
-public class WebtoonSaveResponse {
+public class WebtoonResponse {
 
     private final Long id;
     private final String title;
@@ -19,7 +19,7 @@ public class WebtoonSaveResponse {
     private final DayOfWeek dayOfWeek;
     private final WebtoonStatus status;
 
-    public WebtoonSaveResponse(Webtoon webtoon, List<String> authors) {
+    public WebtoonResponse(Webtoon webtoon, List<String> authors) {
         this.id = webtoon.getId();
         this.title = webtoon.getTitle();
         this.authors = authors;
