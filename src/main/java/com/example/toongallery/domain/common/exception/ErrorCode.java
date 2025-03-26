@@ -25,7 +25,7 @@ public enum ErrorCode {
     //에피소드 관련 에러 코드
 
     //카테고리 관련 에러 코드
-
+    DUPLICATE_CATEGORY_NAME("중복된 카테고리 명이 있습니다.", HttpStatus.BAD_REQUEST),
     //댓글 관련 에러코드
 
     //좋아요 관련 에러 코드
