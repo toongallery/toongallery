@@ -28,6 +28,7 @@ public enum ErrorCode {
 
     //카테고리 관련 에러 코드
     DUPLICATE_CATEGORY_NAME("중복된 카테고리 명이 있습니다.", HttpStatus.BAD_REQUEST),
+    CATEGORY_NOT_EXIST("존재하지 않는 카테고리입니다.", HttpStatus.BAD_REQUEST),
     //댓글 관련 에러코드
 
     //좋아요 관련 에러 코드
