@@ -1,41 +1,30 @@
 package com.example.toongallery.domain.like.entity;
 
+import com.example.toongallery.domain.comment.entity.Comment;
 import com.example.toongallery.domain.common.entity.BaseEntity;
+import com.example.toongallery.domain.user.entity.User;
 import jakarta.persistence.*;
-import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-
-import java.time.LocalDateTime;
+import lombok.Setter;
 
 @Getter
 @Entity
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Setter
+@NoArgsConstructor
 @Table(name = "Likes")
 public class Like extends BaseEntity {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    private LocalDateTime createdAt;
-
-    private LocalDateTime modifiedAt;
-
-/*
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "commnet_id")
+    @JoinColumn(name = "comment_id", nullable = false)
     private Comment comment;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "user_id", nullable = false)
     private User user;
-*/
-
-    public Like (LocalDateTime createdAt,LocalDateTime modifiedAt) {
-        this.createdAt = LocalDateTime.now();
-        this.modifiedAt = LocalDateTime.now();
-    }
-
 
 }
 
