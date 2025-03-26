@@ -25,11 +25,12 @@ public enum ErrorCode {
     //웹툰 관련 에러 코드
 
     //에피소드 관련 에러 코드
-
+    EPISODE_NOT_FOUND("에피소드를 찾을 수 없습니다.", HttpStatus.NOT_FOUND),
     //카테고리 관련 에러 코드
 
     //댓글 관련 에러코드
-
+    COMMENT_NOT_FOUND("댓글을 찾을 수 없습니다.", HttpStatus.NOT_FOUND),
+    COMMENT_NOT_MATCH_USER("댓글의 작성자가 아닙니다" , HttpStatus.BAD_REQUEST),
     //좋아요 관련 에러 코드
 
     //관심 관련 에러 코드
