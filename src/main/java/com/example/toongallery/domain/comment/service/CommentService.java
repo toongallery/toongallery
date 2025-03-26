@@ -88,6 +88,7 @@ public class CommentService {
         if (!user.getId().equals(authUser.getUserId())) {
             throw new BaseException(ErrorCode.COMMENT_NOT_MATCH_USER, null);
         }
+        commentRepository.deleteByParentId(comment.getId());
         commentRepository.delete(comment);
     }
 }

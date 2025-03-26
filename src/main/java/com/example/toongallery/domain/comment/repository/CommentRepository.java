@@ -13,4 +13,6 @@ public interface CommentRepository extends JpaRepository<Comment, Long> {
     List<Comment> findByParentIdOrderByCreatedAt(Long parentId);
 
     Page<Comment> findByEpisodeIdAndParentIsNullOrderByCreatedAt(Long episodeId, Pageable pageable);
+
+    void deleteByParentId(Long parentId);
 }
