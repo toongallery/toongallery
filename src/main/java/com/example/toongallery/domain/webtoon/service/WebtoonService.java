@@ -2,6 +2,7 @@ package com.example.toongallery.domain.webtoon.service;
 
 import com.example.toongallery.domain.author.entity.Author;
 import com.example.toongallery.domain.author.repository.AuthorRepository;
+import com.example.toongallery.domain.author.service.AuthorService;
 import com.example.toongallery.domain.common.dto.AuthUser;
 import com.example.toongallery.domain.common.exception.BaseException;
 import com.example.toongallery.domain.common.exception.ErrorCode;
@@ -30,7 +31,7 @@ public class WebtoonService {
 
     private final WebtoonRepository webtoonRepository;
     private final UserRepository userRepository;
-    private final AuthorRepository authorRepository;
+    private final AuthorService authorService;
 
     @Transactional
     public Webtoon saveWebtoon(AuthUser authUser, WebtoonSaveRequest webtoonSaveRequest) {
@@ -67,16 +68,11 @@ public class WebtoonService {
         //작가 리스트에 본인 추가
         authors.add(mainAuthor);
 
-        List<Author> authorList = authors.stream()
-                .map(Author::new)
-                .collect(Collectors.toList());
-
         //List<String>을 콤마(,)로 연결하여 저장
         String genreString = String.join(",", webtoonSaveRequest.getGenres());
 
         Webtoon webtoon = new Webtoon(
                 webtoonSaveRequest.getTitle(),
-                authorList,
                 genreString,
                 webtoonSaveRequest.getThumbnail(),
                 webtoonSaveRequest.getDescription(),
@@ -84,6 +80,8 @@ public class WebtoonService {
                 webtoonSaveRequest.getStatus()
         );
         Webtoon savedWebtoon = webtoonRepository.save(webtoon);
+
+        authorService.createAuthors(savedWebtoon, authors);
 
         return savedWebtoon;
     }
@@ -96,18 +94,7 @@ public class WebtoonService {
 
         return webtoons.map(webtoon -> {
 
-            System.out.println("웹툰 ID: " + webtoon.getId());
-            System.out.println("저장된 작가 수: "+webtoon.getAuthors().size());
-
-            List<Long> authorIds = webtoon.getAuthors().stream()
-                    .map(Author::getUserId)
-                    .collect(Collectors.toList());
-
-            System.out.println("조회할 작가 ID 리스트: "+authorIds);
-
-            List<String> authorNames = userRepository.findNamesById(authorIds);
-
-            System.out.println("조회된 작가 이름 리스트: "+authorNames);
+            List<String> authorNames = authorService.getAuthorNamesByWebtoonId(webtoon.getId());
 
             List<String> genreList = Arrays.asList(webtoon.getGenres().split(","));
 

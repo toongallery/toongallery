@@ -20,8 +20,13 @@ public class Author {
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-    public Author(User user) {
+    @ManyToOne
+    @JoinColumn(name = "webtoon_id", nullable = false)
+    private Webtoon webtoon;
+
+    public Author(User user, Webtoon webtoon) {
         this.user = user;
+        this.webtoon = webtoon;
     }
 
     public Long getUserId(){
