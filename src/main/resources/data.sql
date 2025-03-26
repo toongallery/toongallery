@@ -1,5 +1,5 @@
-INSERT INTO users (id, email, password, name, birth_date, gender,user_role, user_status, created_At, modified_At)
-VALUES (1, 'test@example.com', 'password@123', '테스트 사용자', '1990-01-01', 'MALE','ROLE_USER','ACTIVE', NOW(), NOW());
+INSERT INTO users (id, email, password, name, birth_date, gender,user_role, deleted_At, created_At, modified_At)
+VALUES (1, 'test@example.com', 'password@123', '테스트 사용자', '1990-01-01', 'MALE','ROLE_USER', NULL, NOW(), NOW());
 
 INSERT INTO episodes (id, title, episode_number, thumbnail_url, created_at, modified_at)
 VALUES (1, '에피소드 제목', 3,'testurl', NOW(), NOW());
