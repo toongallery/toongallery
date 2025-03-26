@@ -31,11 +31,11 @@ public enum ErrorCode {
     //댓글 관련 에러코드
 
     //좋아요 관련 에러 코드
-
+    COMMENT_NOT_EXIST("댓글이 존재하지 않습니다.", HttpStatus.BAD_REQUEST),
     //관심 관련 에러 코드
 
     //평점 관련 에러 코드
-
+    EPISODE_NOT_EXIST("에피소드가 존재하지 않습니다.", HttpStatus.BAD_REQUEST),
     //이미지 관련 에러코드
 
     //그 외 에러 코드
