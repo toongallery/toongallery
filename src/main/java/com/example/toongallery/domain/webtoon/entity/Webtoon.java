@@ -27,7 +27,7 @@ public class Webtoon extends BaseEntity {
     @JoinColumn(name = "webtoon_id")
     private List<Author> authors = new ArrayList<>();
 
-    private String genre;//장르
+    private String genres;//장르
 
     private String thumbnail;//썸네일
 
@@ -45,10 +45,10 @@ public class Webtoon extends BaseEntity {
 
     private Integer views;//조회수
 
-    public Webtoon(String title, List<Author> authors ,String genre, String thumbnail, String description, DayOfWeek day_of_week, WebtoonStatus status) {
+    public Webtoon(String title, List<Author> authors , String genres, String thumbnail, String description, DayOfWeek day_of_week, WebtoonStatus status) {
         this.title = title;
         this.authors = authors;
-        this.genre = genre;
+        this.genres = genres;
         this.thumbnail = thumbnail;
         this.description = description;
         this.day_of_week = day_of_week;

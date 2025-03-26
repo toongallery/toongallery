@@ -15,17 +15,17 @@ public class WebtoonResponse {
     private final Long id;
     private final String title;
     private final List<String> authors;
-    private final String genre;
+    private final List<String> genres;
     private final String thumbnail;
     private final String description;
     private final DayOfWeek dayOfWeek;
     private final WebtoonStatus status;
 
-    public WebtoonResponse(Long id, String title, List<String> authors, String genre, String thumbnail, String description, DayOfWeek dayOfWeek, WebtoonStatus status) {
+    public WebtoonResponse(Long id, String title, List<String> authors, List<String> genres, String thumbnail, String description, DayOfWeek dayOfWeek, WebtoonStatus status) {
         this.id = id;
         this.title = title;
         this.authors = authors;
-        this.genre = genre;
+        this.genres = genres;
         this.thumbnail = thumbnail;
         this.description = description;
         this.dayOfWeek = dayOfWeek;

@@ -22,8 +22,8 @@ public class WebtoonSaveRequest {
     @NotEmpty
     private List<String> authors;
 
-    @NotBlank
-    private String genre;
+    @NotEmpty
+    private List<String> genres;
 
     @NotBlank
     private String thumbnail;

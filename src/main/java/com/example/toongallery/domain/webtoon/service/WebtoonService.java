@@ -20,6 +20,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -70,10 +71,13 @@ public class WebtoonService {
                 .map(Author::new)
                 .collect(Collectors.toList());
 
+        //List<String>을 콤마(,)로 연결하여 저장
+        String genreString = String.join(",", webtoonSaveRequest.getGenres());
+
         Webtoon webtoon = new Webtoon(
                 webtoonSaveRequest.getTitle(),
                 authorList,
-                webtoonSaveRequest.getGenre(),
+                genreString,
                 webtoonSaveRequest.getThumbnail(),
                 webtoonSaveRequest.getDescription(),
                 webtoonSaveRequest.getDay_of_week(),
@@ -105,11 +109,13 @@ public class WebtoonService {
 
             System.out.println("조회된 작가 이름 리스트: "+authorNames);
 
+            List<String> genreList = Arrays.asList(webtoon.getGenres().split(","));
+
             return new WebtoonResponse(
                     webtoon.getId(),
                     webtoon.getTitle(),
                     authorNames,
-                    webtoon.getGenre(),
+                    genreList,
                     webtoon.getThumbnail(),
                     webtoon.getDescription(),
                     webtoon.getDay_of_week(),
