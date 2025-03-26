@@ -19,7 +19,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -85,18 +84,37 @@ public class WebtoonService {
         return savedWebtoon;
     }
 
-//    @Transactional(readOnly = true)
-//    public Page<WebtoonResponse> getWebtoon(int page, int size) {
-//        Pageable pageable = PageRequest.of(page-1, size);
-//
-//        Page<Webtoon> webtoons = webtoonRepository.findAll(pageable);
-//
-//        return webtoons.map(webtoon -> new WebtoonResponse(
-//                webtoon.getId(),
-//                webtoon.getTitle(),
-//                webtoon.getAuthors(),
-//                webtoon.getGenre(),
-//                we
-//        ))
-//    }
+    @Transactional(readOnly = true)
+    public Page<WebtoonResponse> getWebtoons(int page, int size) {
+        Pageable pageable = PageRequest.of(page-1, size);
+
+        Page<Webtoon> webtoons = webtoonRepository.findAll(pageable);
+
+        return webtoons.map(webtoon -> {
+
+            System.out.println("웹툰 ID: " + webtoon.getId());
+            System.out.println("저장된 작가 수: "+webtoon.getAuthors().size());
+
+            List<Long> authorIds = webtoon.getAuthors().stream()
+                    .map(Author::getUserId)
+                    .collect(Collectors.toList());
+
+            System.out.println("조회할 작가 ID 리스트: "+authorIds);
+
+            List<String> authorNames = userRepository.findNamesById(authorIds);
+
+            System.out.println("조회된 작가 이름 리스트: "+authorNames);
+
+            return new WebtoonResponse(
+                    webtoon.getId(),
+                    webtoon.getTitle(),
+                    authorNames,
+                    webtoon.getGenre(),
+                    webtoon.getThumbnail(),
+                    webtoon.getDescription(),
+                    webtoon.getDay_of_week(),
+                    webtoon.getStatus()
+            );
+        });
+    }
 }

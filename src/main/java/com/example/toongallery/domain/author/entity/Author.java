@@ -23,4 +23,8 @@ public class Author {
     public Author(User user) {
         this.user = user;
     }
+
+    public Long getUserId(){
+        return user.getId();
+    }
 }

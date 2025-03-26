@@ -1,11 +1,13 @@
 package com.example.toongallery.domain.webtoon.dto.response;
 
+import com.example.toongallery.domain.author.entity.Author;
 import com.example.toongallery.domain.webtoon.entity.Webtoon;
 import com.example.toongallery.domain.webtoon.enums.DayOfWeek;
 import com.example.toongallery.domain.webtoon.enums.WebtoonStatus;
 import lombok.Getter;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Getter
 public class WebtoonResponse {
@@ -19,14 +21,14 @@ public class WebtoonResponse {
     private final DayOfWeek dayOfWeek;
     private final WebtoonStatus status;
 
-    public WebtoonResponse(Webtoon webtoon, List<String> authors) {
-        this.id = webtoon.getId();
-        this.title = webtoon.getTitle();
+    public WebtoonResponse(Long id, String title, List<String> authors, String genre, String thumbnail, String description, DayOfWeek dayOfWeek, WebtoonStatus status) {
+        this.id = id;
+        this.title = title;
         this.authors = authors;
-        this.genre = webtoon.getGenre();
-        this.thumbnail = webtoon.getThumbnail();
-        this.description = webtoon.getDescription();
-        this.dayOfWeek = webtoon.getDay_of_week();
-        this.status = webtoon.getStatus();
+        this.genre = genre;
+        this.thumbnail = thumbnail;
+        this.description = description;
+        this.dayOfWeek = dayOfWeek;
+        this.status = status;
     }
 }
