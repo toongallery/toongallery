@@ -1,6 +1,7 @@
 package com.example.toongallery.domain.webtooncategory.entity;
 
 import com.example.toongallery.domain.category.entity.Category;
+import com.example.toongallery.domain.webtoon.entity.Webtoon;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -19,7 +20,7 @@ public class WebtoonCategory {
     @JoinColumn(name = "category_id", nullable = false)
     private Category category;
 
-//    @ManyToOne(fetch = FetchType.LAZY)
-//    @JoinColumn(name = "webtoon_id", nullable = false)
-//    private Webtoon webtoon;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "webtoon_id", nullable = false)
+    private Webtoon webtoon;
 }

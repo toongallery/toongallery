@@ -27,7 +27,8 @@ public enum ErrorCode {
     //에피소드 관련 에러 코드
     EPISODE_NOT_FOUND("에피소드를 찾을 수 없습니다.", HttpStatus.NOT_FOUND),
     //카테고리 관련 에러 코드
-
+    DUPLICATE_CATEGORY_NAME("중복된 카테고리 명이 있습니다.", HttpStatus.BAD_REQUEST),
+    CATEGORY_NOT_EXIST("존재하지 않는 카테고리입니다.", HttpStatus.BAD_REQUEST),
     //댓글 관련 에러코드
     COMMENT_NOT_FOUND("댓글을 찾을 수 없습니다.", HttpStatus.NOT_FOUND),
     COMMENT_NOT_MATCH_USER("댓글의 작성자가 아닙니다" , HttpStatus.BAD_REQUEST),

@@ -15,11 +15,16 @@ public class Category extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(length = 10, nullable = false, unique = true)
     private String categoryName;
 
     public static Category of(String categoryName){
         Category category = new Category();
         category.categoryName = categoryName;
         return category;
+    }
+
+    public void updateCategoryName(String categoryName) {
+        this.categoryName = categoryName;
     }
 }
