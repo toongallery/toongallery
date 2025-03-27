@@ -1,0 +1,32 @@
+version: "3.8"
+
+services:
+  app:
+    build: .
+    container_name: app
+    ports:
+      - "8080:8080"
+    depends_on:
+      - db
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://localhost:3306/toongallery
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: hansung
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+    networks:
+      - my-network
+
+  db:
+    image: mysql:8.0
+    container_name: db
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: hansung
+      MYSQL_DATABASE: toongallery
+    ports:
+      - "3306:3306"
+    networks:
+      - my-network
+
+networks:
+  my-network:

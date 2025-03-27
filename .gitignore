@@ -38,3 +38,7 @@ out/
 
 ### properties ###
 *.properties
+
+
+### docker ###
+docker-compose.yml
