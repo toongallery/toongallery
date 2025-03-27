@@ -26,7 +26,7 @@ public class Episode extends BaseEntity {
     @JoinColumn(name = "webtoon_id", nullable = false)
     private Webtoon webtoon;
 
-    public static Episode of(String title, Integer episodeNumber, String thumbnailUrl, Webtoon webtoon){
+    public static Episode of(String title, Integer episodeNumber, String thumbnailUrl, Webtoon webtoon) {
         Episode episode = new Episode();
         episode.title = title;
         episode.episodeNumber = episodeNumber;

@@ -26,7 +26,7 @@ public class Image extends BaseEntity {
     @JoinColumn(name = "episode_id", nullable = false)
     private Episode episode;
 
-    public static Image of(String imageName, String imageUrl, Integer imageIndex, Episode episode){
+    public static Image of(String imageName, String imageUrl, Integer imageIndex, Episode episode) {
         Image image = new Image();
         image.imageName = imageName;
         image.imageUrl = imageUrl;

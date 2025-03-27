@@ -6,6 +6,7 @@ import com.example.toongallery.domain.author.service.AuthorService;
 import com.example.toongallery.domain.common.dto.AuthUser;
 import com.example.toongallery.domain.common.exception.BaseException;
 import com.example.toongallery.domain.common.exception.ErrorCode;
+import com.example.toongallery.domain.rate.service.RateService;
 import com.example.toongallery.domain.user.entity.User;
 import com.example.toongallery.domain.user.enums.UserRole;
 import com.example.toongallery.domain.user.repository.UserRepository;
@@ -32,36 +33,37 @@ public class WebtoonService {
     private final WebtoonRepository webtoonRepository;
     private final UserRepository userRepository;
     private final AuthorService authorService;
+    private final RateService rateService;
 
     @Transactional
     public Webtoon saveWebtoon(AuthUser authUser, WebtoonSaveRequest webtoonSaveRequest) {
 
         //현재 로그인한 사용자 가져오기
         User mainAuthor = userRepository.findByEmail(authUser.getEmail())
-                .orElseThrow(()->new BaseException(ErrorCode.USER_NOT_EXIST,null));
+                .orElseThrow(() -> new BaseException(ErrorCode.USER_NOT_EXIST, null));
 
         //사용자가 작가가 아닐 경우 예외처리
-        if(authUser.getUserRole() != UserRole.ROLE_ADMIN){
-            throw new BaseException(ErrorCode.INVALID_USER_ROLE,null);
+        if (authUser.getUserRole() != UserRole.ROLE_ADMIN) {
+            throw new BaseException(ErrorCode.INVALID_USER_ROLE, null);
         }
 
         //추가할 작가 이름으로 사용자 조회(있는 경우에만 실행)
         List<User> authors = new ArrayList<>();
 
-        if(webtoonSaveRequest.getAuthors() != null && !webtoonSaveRequest.getAuthors().isEmpty()) {
+        if (webtoonSaveRequest.getAuthors() != null && !webtoonSaveRequest.getAuthors().isEmpty()) {
             authors = userRepository.findByNameIn(webtoonSaveRequest.getAuthors());
 
-            if(authors.size() != webtoonSaveRequest.getAuthors().size()) {
-                throw new BaseException(ErrorCode.USER_NOT_FOUND,null);
+            if (authors.size() != webtoonSaveRequest.getAuthors().size()) {
+                throw new BaseException(ErrorCode.USER_NOT_FOUND, null);
             }
 
             //작가가 아닌 사용자가 포함되었는지 체크
             List<User> nonAuthors = authors.stream()
-                    .filter(user->user.getUserRole() != UserRole.ROLE_ADMIN)
+                    .filter(user -> user.getUserRole() != UserRole.ROLE_ADMIN)
                     .collect(Collectors.toList());
 
-            if(!nonAuthors.isEmpty()) {
-                throw new BaseException(ErrorCode.INVALID_USER_ROLE,null);
+            if (!nonAuthors.isEmpty()) {
+                throw new BaseException(ErrorCode.INVALID_USER_ROLE, null);
             }
         }
 
@@ -88,7 +90,7 @@ public class WebtoonService {
 
     @Transactional(readOnly = true)
     public Page<WebtoonResponse> getWebtoons(int page, int size) {
-        Pageable pageable = PageRequest.of(page-1, size);
+        Pageable pageable = PageRequest.of(page - 1, size);
 
         Page<Webtoon> webtoons = webtoonRepository.findAll(pageable);
 
@@ -120,15 +122,15 @@ public class WebtoonService {
             List<String> genres,
             String authorName,
             int page, int size
-    ){
-        Pageable pageable = PageRequest.of(page-1, size);
+    ) {
+        Pageable pageable = PageRequest.of(page - 1, size);
 
         Page<Webtoon> webtoons = webtoonRepository.findBySearch(
                 keyword, genres, authorName, pageable
         );
         System.out.println("[조회 결과] 총 " + webtoons.getTotalElements() + "건");
 
-        return webtoons.map(webtoon->{
+        return webtoons.map(webtoon -> {
             List<String> authorNames = authorService.getAuthorNamesByWebtoonId(webtoon.getId());
             System.out.println("작가 목록: " + authorNames);
 
@@ -148,5 +150,17 @@ public class WebtoonService {
                     webtoon.getViews()
             );
         });
+    }
+
+    @Transactional(readOnly = true)
+    public Webtoon getWebtoonWithAverageRate(Long webtoonId) {
+        Webtoon webtoon = webtoonRepository.findById(webtoonId)
+                .orElseThrow(() -> new BaseException(ErrorCode.WEBTOON_NOT_EXIST, null));
+
+        // 평균 평점 설정
+        Double averageRate = rateService.getAverageRateByWebtoonId(webtoonId);
+        webtoon.setRate(averageRate);
+
+        return webtoon;
     }
 }

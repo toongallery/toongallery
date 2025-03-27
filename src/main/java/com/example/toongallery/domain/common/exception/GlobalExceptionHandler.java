@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.util.List;
 import java.util.stream.Collectors;
+
 @Slf4j
 @RestControllerAdvice
 public class GlobalExceptionHandler {
@@ -45,7 +46,7 @@ public class GlobalExceptionHandler {
                 ex.getMessage(),
                 ErrorCode.SERVER_NOT_WORK.name()
         );
-        log.error("[에러발생]",ex);
+        log.error("[에러발생]", ex);
         return new ResponseEntity<>(ErrorResponse.of(errorDetail), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }

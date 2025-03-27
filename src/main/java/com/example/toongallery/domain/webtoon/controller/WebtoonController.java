@@ -3,6 +3,7 @@ package com.example.toongallery.domain.webtoon.controller;
 import com.example.toongallery.domain.common.dto.AuthUser;
 import com.example.toongallery.domain.webtoon.dto.request.WebtoonSaveRequest;
 import com.example.toongallery.domain.webtoon.dto.response.WebtoonResponse;
+import com.example.toongallery.domain.webtoon.entity.Webtoon;
 import com.example.toongallery.domain.webtoon.service.WebtoonService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -24,7 +25,7 @@ public class WebtoonController {
     public ResponseEntity<String> createWebtoon(
             @RequestBody WebtoonSaveRequest webtoonSaveRequest,
             @AuthenticationPrincipal AuthUser authUser
-            ){
+    ) {
         webtoonService.saveWebtoon(authUser, webtoonSaveRequest);
         return ResponseEntity.ok("웹툰 등록이 완료되었습니다!");
     }
@@ -34,7 +35,7 @@ public class WebtoonController {
     public ResponseEntity<Page<WebtoonResponse>> getWebtoons(
             @RequestParam(defaultValue = "1") int page,
             @RequestParam(defaultValue = "10") int size
-    ){
+    ) {
         return ResponseEntity.ok(webtoonService.getWebtoons(page, size));
     }
 
@@ -46,7 +47,13 @@ public class WebtoonController {
             @RequestParam(required = false) String author,
             @RequestParam(defaultValue = "1") int page,
             @RequestParam(defaultValue = "10") int size
-            ){
+    ) {
         return ResponseEntity.ok(webtoonService.searchWebtoons(keyword, genres, author, page, size));
+    }
+
+    @GetMapping("/{webtoonId}/rate")
+    public Double getAverageRate(@PathVariable Long webtoonId) {
+        Webtoon webtoon = webtoonService.getWebtoonWithAverageRate(webtoonId);
+        return webtoon.getRate();
     }
 }

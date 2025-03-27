@@ -19,6 +19,7 @@ public class CommentResponse {
         this.userId = userId;
         this.parentId = parentId;
     }
+
     public static CommentResponse of(Comment comment) {
         return new CommentResponse(
                 comment.getId(),

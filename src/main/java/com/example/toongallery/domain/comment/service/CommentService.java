@@ -34,6 +34,7 @@ public class CommentService {
         Comment comment = commentRepository.save(new Comment(episode, user, request.getContent(), parent));
         return CommentResponse.of(comment);
     }
+
     private Comment findParentComment(Long parentId) {
         if (parentId == null) {
             return null;

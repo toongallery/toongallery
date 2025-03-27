@@ -15,7 +15,8 @@ import lombok.*;
 @AllArgsConstructor
 public class Favorite extends BaseEntity {
 
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -26,5 +27,7 @@ public class Favorite extends BaseEntity {
     @JoinColumn(name = "user_id")
     private User user;
 
+    @Version
+    private Long version;
 
 }

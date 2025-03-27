@@ -23,13 +23,14 @@ public class EpisodeController {
     public ResponseEntity<String> createEpisode(
             @PathVariable Long webtoonId,
             @RequestPart(value = "json") EpisodeSaveRequest dto,
-            @RequestPart(value ="thumbnail") MultipartFile thumbnailFile,
-            @RequestPart(value ="images") List<MultipartFile> imageFiles
+            @RequestPart(value = "thumbnail") MultipartFile thumbnailFile,
+            @RequestPart(value = "images") List<MultipartFile> imageFiles
 
     ) throws Exception {
         Episode episode = episodeService.saveEpisode(webtoonId, dto, thumbnailFile, imageFiles);
         return ResponseEntity.ok("에피소드 등록 완료 (ID: " + episode.getId() + ")");
     }
+
     @GetMapping("/webtoons/{webtoonId}/episodes")
     public ResponseEntity<List<EpisodeResponseDto>> getEpisodes(@PathVariable Long webtoonId) {
         List<EpisodeResponseDto> episodes = episodeService.getEpisodesByWebtoonId(webtoonId);

@@ -9,10 +9,13 @@ import org.springframework.stereotype.Repository;
 import java.util.Optional;
 
 @Repository
-public interface RateRepository extends JpaRepository <Rate , Long> {
+public interface RateRepository extends JpaRepository<Rate, Long> {
     // 특정 에피소드의 평균 별점 계산
     @Query("SELECT COALESCE(AVG(r.rates),0.0) FROM Rate r WHERE r.episode.id = :episodeId")
     Double findAverageRateByEpisodeId(@Param("episodeId") Long episodeId);
+
+    @Query("SELECT AVG(r.rate) FROM Rate r WHERE r.episode.webtoon.id = :webtoonId")
+    Double findAverageRateByWebtoonId(@Param("webtoonId") Long webtoonId);
 
     // 사용자가 특정 에피소드에 준 별점 조회
     @Query("SELECT r FROM Rate r WHERE r.user.id = :userId AND r.episode.id = :episodeId")

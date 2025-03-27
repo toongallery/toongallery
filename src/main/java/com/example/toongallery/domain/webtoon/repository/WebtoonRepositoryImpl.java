@@ -20,7 +20,7 @@ import static com.example.toongallery.domain.user.entity.QUser.user;
 import static com.example.toongallery.domain.webtoon.entity.QWebtoon.webtoon;
 
 @RequiredArgsConstructor
-public class WebtoonRepositoryImpl implements WebtoonRepositoryCustom{
+public class WebtoonRepositoryImpl implements WebtoonRepositoryCustom {
     private final JPAQueryFactory queryFactory;
 
     @Override
@@ -62,7 +62,7 @@ public class WebtoonRepositoryImpl implements WebtoonRepositoryCustom{
     private BooleanExpression genresContain(List<String> genres) {
         return (genres != null && !genres.isEmpty()) ?
                 genres.stream()
-                        .map(genre->webtoon.genres.like("%"+genre+"%"))
+                        .map(genre -> webtoon.genres.like("%" + genre + "%"))
                         .reduce(BooleanExpression::or)
                         .orElse(null) : null;
     }

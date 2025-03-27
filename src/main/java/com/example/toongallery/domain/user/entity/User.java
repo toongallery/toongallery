@@ -55,6 +55,7 @@ public class User extends BaseEntity {
         this.email = email;
         this.userRole = userRole;
     }
+
     public static User fromAuthUser(AuthUser authUser) {
         return new User(authUser.getUserId(), authUser.getEmail(), authUser.getUserRole());
     }

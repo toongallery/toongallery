@@ -35,7 +35,7 @@ public class CommentController {
             @RequestParam(required = false, defaultValue = "1") Integer page,
             @RequestParam(required = false, defaultValue = "10") Integer size
     ) {
-        Pageable pageable = PageRequest.of(page-1, size);
+        Pageable pageable = PageRequest.of(page - 1, size);
         return ResponseEntity.ok(commentService.getComments(episodeId, pageable));
     }
 
