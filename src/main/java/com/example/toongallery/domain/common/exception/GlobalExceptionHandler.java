@@ -21,6 +21,7 @@ public class GlobalExceptionHandler {
                 ex.getErrorCode().getMessage(),
                 ex.getErrorCode().name()
         );
+        log.error("[에러발생]",ex);
         return new ResponseEntity<>(ErrorResponse.of(errorDetail), ex.getErrorCode().getHttpStatus());
     }
 

@@ -11,8 +11,10 @@ import com.example.toongallery.domain.image.entity.Image;
 import com.example.toongallery.domain.image.repository.ImageRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,6 +24,13 @@ public class ImageService {
     private final ImageRepository imageRepository;
     private final FileUpLoader fileUpLoader;
 
+    @Transactional
+    public String uploadWebtoonThumbnail(Long webtoonId, MultipartFile file) {
+        String path = ImageType.WEBTOON_THUMBNAIL.getPath(webtoonId.toString());
+        return fileUpLoader.upload(file, path, "thumbnail.png");
+    }
+
+    @Transactional
     public String uploadEpisodeThumbnail(Long webtoonId, int episodeNumber, MultipartFile file) {
         String path = ImageType.EPISODE_THUMBNAIL.getPath(
                 webtoonId.toString(),
@@ -31,6 +40,17 @@ public class ImageService {
         return fileUpLoader.upload(file, path, "thumbnail.png");
     }
 
+    @Transactional
+    public void deleteEpisodeThumbnail(Long webtoonId, int episodeNumber) {
+        String path = ImageType.EPISODE_THUMBNAIL.getPath(
+                webtoonId.toString(),
+                String.valueOf(episodeNumber)
+        );
+        String key = path.endsWith("/") ? path + "thumbnail.png" : path + "/thumbnail.png";
+        fileUpLoader.delete(key);
+    }
+
+    @Transactional
     public List<Image> uploadEpisodeImages(Long webtoonId, int episodeNumber, List<MultipartFile> files, Episode episode) {
         List<Image> images = new ArrayList<>();
         List<String> uploadedFilePaths = new ArrayList<>();
@@ -42,28 +62,29 @@ public class ImageService {
             String path = ImageType.EPISODE_MAIN.getPath(webtoonId.toString(), String.valueOf(episodeNumber));
             String key = path.endsWith("/") ? path + filename : path + "/" + filename;
 
-            try {
-                String url = fileUpLoader.upload(file, path, filename);
+            String url = fileUpLoader.upload(file, path, filename);
                 Image image = Image.of(filename, url, i, episode);
                 images.add(image);
                 uploadedFilePaths.add(key);
-            } catch (BaseException uploadEx) {
-                // 실패한 경우, 이전에 업로드한 이미지들 S3에서 삭제
-//                for (String uploadedKey : uploadedFilePaths) {
-//                    try {
-//                        fileUpLoader.delete(uploadedKey);
-//                    } catch (BaseException deleteEx) {
-//                        System.err.println("업로드 롤백 중 이미지 삭제 실패: " + uploadedKey);
-//                    }
-//                }
-// 여기서 상태 값 변경, 체크드익셉션, 언체크드 익셉션을 찾아보고 롤백이 안되는 법을 확인..
-                throw new BaseException(ErrorCode.SERVER_NOT_WORK, "에피소드 이미지 업로드 중 실패");
-            }
         }
 
         return imageRepository.saveAll(images);
     }
 
+    @Transactional
+    public void deleteEpisodeImages(Long episodeId) {
+        List<Image> images = imageRepository.findImagesByEpisodeId(episodeId);
+        for (Image image : images) {
+            // CloudFront URL에서 key 부분만 추출
+            String s3Key = extractS3KeyFromUrl(image.getImageUrl());
+            fileUpLoader.delete(s3Key);
+        }
+        imageRepository.deleteAll(images);
+    }
 
+    private String extractS3KeyFromUrl(String imageUrl) {
+        URI uri = URI.create(imageUrl);
+        return uri.getPath().substring(1); // 맨 앞의 '/' 제거해서 S3 key 완성
+    }
 
 }

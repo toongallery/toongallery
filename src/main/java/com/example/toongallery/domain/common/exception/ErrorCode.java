@@ -23,7 +23,8 @@ public enum ErrorCode {
     INVALID_REFRESH_TOKEN("유효하지 않은 refresh token 입니다.", HttpStatus.BAD_REQUEST),
     USERID_NOT_MATCH("유저 id가 일치하지 않습니다." , HttpStatus.BAD_REQUEST),
     //웹툰 관련 에러 코드
-
+    WEBTOON_NOT_FOUND("존재하지 않는 웹툰입니다.",HttpStatus.BAD_REQUEST),
+    DUPLICATE_EPISODE_TITLE("이미 존재하는 에피소드 제목입니다.",HttpStatus.BAD_REQUEST),
     //에피소드 관련 에러 코드
     EPISODE_NOT_FOUND("에피소드를 찾을 수 없습니다.", HttpStatus.NOT_FOUND),
     //카테고리 관련 에러 코드
@@ -37,10 +38,10 @@ public enum ErrorCode {
     //관심 관련 에러 코드
 
     //평점 관련 에러 코드
-    EPISODE_NOT_EXIST("에피소드가 존재하지 않습니다.", HttpStatus.BAD_REQUEST),
     //이미지 관련 에러코드
 
     //그 외 에러 코드
+    UNSUPPORTED_FILE_TYPE("지원하지 않는 파일 타입입니다.", HttpStatus.BAD_REQUEST),
     INVALID_TYPE("유효하지 않은 타입입니다.",HttpStatus.BAD_REQUEST),
     SERVER_NOT_WORK("서버 문제로 인해 실패했습니다.", HttpStatus.INTERNAL_SERVER_ERROR);
 
