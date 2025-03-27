@@ -48,6 +48,7 @@ public class SecurityConfig {
                         .requestMatchers("/webtoons/**").permitAll()
                         .requestMatchers("/like/**").permitAll()//시큐리티 없이 like의 동작을 테스트 하기위해 임시로 작성
                         .requestMatchers("/favorite/**  ").permitAll()//시큐리티 없이 favorite의 동작을 테스트 하기위해 임시로 작성
+                        .requestMatchers("/rate/**").permitAll()//시큐리티 없이 rate의 동작을 테스트 하기위해 임시로 작성
                         .anyRequest().authenticated()
                 )
                 .build();
