@@ -1,7 +1,9 @@
 package com.example.toongallery.domain.episode.service;
 
-import com.example.toongallery.domain.common.service.StorageService;
-import com.example.toongallery.domain.common.util.FileUtils;
+import com.example.toongallery.domain.common.exception.BaseException;
+import com.example.toongallery.domain.common.exception.ErrorCode;
+import com.example.toongallery.domain.image.service.ImageService;
+import com.example.toongallery.domain.common.util.ImageType;
 import com.example.toongallery.domain.episode.dto.request.EpisodeSaveRequest;
 import com.example.toongallery.domain.episode.dto.response.EpisodeDetailResponseDto;
 import com.example.toongallery.domain.episode.dto.response.EpisodeResponseDto;
@@ -25,38 +27,41 @@ public class EpisodeService {
     private final EpisodeRepository episodeRepository;
     private final ImageRepository imageRepository;
     private final WebtoonRepository webtoonRepository;
-    private final StorageService storageService;
+    private final ImageService imageService;
 
     @Transactional
-    public Episode saveEpisode(Long webtoonId, EpisodeSaveRequest dto, MultipartFile thumbnailFile, List<MultipartFile> imageFiles)throws IOException{
-        // 웹툰 조회
+    public Episode saveEpisode(
+            Long webtoonId,
+            EpisodeSaveRequest dto,
+            MultipartFile thumbnailFile,
+            List<MultipartFile> imageFiles
+    ) {
+        // 1. 웹툰 조회
         Webtoon webtoon = webtoonRepository.findById(webtoonId)
-                .orElseThrow(() -> new IllegalArgumentException("웹툰을 찾을 수 없습니다."));
+                .orElseThrow(() -> new BaseException(ErrorCode.SERVER_NOT_WORK, null));
 
-        // 에피소드 저장 (썸네일은 일단 null)
-        Episode episode = Episode.of(dto.getTitle(), dto.getEpisodeNumber(), null, webtoon);
+        // 2. 다음 회차 번호 계산
+        int nextEpisodeNumber = episodeRepository.findMaxEpisodeNumberByWebtoonId(webtoonId)
+                .orElse(0) + 1;
+
+        // 3. 썸네일 업로드 → URL 반환 → 에피소드에 반영
+        String thumbnailUrl = imageService.uploadEpisodeThumbnail(
+                webtoonId,
+                nextEpisodeNumber,
+                thumbnailFile
+        );
+
+        // 4. 에피소드 저장 (썸네일은 null 상태로 우선 저장)
+        Episode episode = Episode.of(dto.getTitle(), nextEpisodeNumber, thumbnailUrl, webtoon);
         episodeRepository.save(episode);
 
-        Long episodeId = episode.getId();
-
-        // 썸네일 업로드
-        String thumbPath = String.format("webtoons/%d/episodes/%d/thumbnail", webtoonId, episodeId);
-        String thumbUrl = storageService.upload(thumbnailFile, thumbPath, "thumbnail.png");
-        episode.updateThumbnail(thumbUrl);
-
-
-
-        for (int i = 0; i < imageFiles.size(); i++) {
-            MultipartFile file = imageFiles.get(i);
-            String ext = FileUtils.getExtension(file.getOriginalFilename());
-            String filename = String.format("%03d.%s", i, ext);
-
-            String imagePath = String.format("webtoons/%d/episodes/%d/images", webtoonId, episodeId);
-            String imageUrl = storageService.upload(file, imagePath, filename);
-
-            Image image = Image.of(filename, imageUrl, i, episode);
-            imageRepository.save(image);
-        }
+        // 5. 본문 이미지 업로드 및 저장
+        imageService.uploadEpisodeImages(
+                webtoonId,
+                nextEpisodeNumber,
+                imageFiles,
+                episode
+        );
 
         return episode;
     }

@@ -4,6 +4,9 @@
 INSERT INTO webtoons (id, title, author, genre, thumbnail, description, day_of_week, status, rate, favorite_count, views, created_at, modified_at)
 VALUES (1, '테스트 웹툰', '김작가', 'fantasy', 'testUrl', '테스트 웹툰','TUE','ONGOING',0,0,0,NOW(),NOW());
 
+INSERT INTO webtoons (id, title, author, genre, thumbnail, description, day_of_week, status, rate, favorite_count, views, created_at, modified_at)
+VALUES (2, '테스트 웹툰', '김작가', 'fantasy', 'testUrl', '테스트 웹툰','TUE','ONGOING',0,0,0,NOW(),NOW());
+
 -- INSERT INTO episodes (id, webtoon_id, title, episode_number, thumbnail_url, created_at, modified_at)
 -- VALUES (1, 1, '에피소드 제목', 3,'testurl', NOW(), NOW());
 

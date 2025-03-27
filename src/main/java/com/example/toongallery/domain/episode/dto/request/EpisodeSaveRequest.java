@@ -12,7 +12,4 @@ import java.util.List;
 @NoArgsConstructor
 public class EpisodeSaveRequest {
     private String title;
-    private Integer episodeNumber;
-//    private MultipartFile thumbnail;
-//    private List<MultipartFile> imageFiles;
 }
