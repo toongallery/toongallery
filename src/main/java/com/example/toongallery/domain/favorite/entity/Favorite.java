@@ -4,15 +4,15 @@ import com.example.toongallery.domain.common.entity.BaseEntity;
 import com.example.toongallery.domain.user.entity.User;
 import com.example.toongallery.domain.webtoon.entity.Webtoon;
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 @Getter
 @Setter
 @Entity
 @NoArgsConstructor
 @Table(name = "favorites")
+@Builder
+@AllArgsConstructor
 public class Favorite extends BaseEntity {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)

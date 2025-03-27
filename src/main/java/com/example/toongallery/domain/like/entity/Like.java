@@ -4,14 +4,14 @@ import com.example.toongallery.domain.comment.entity.Comment;
 import com.example.toongallery.domain.common.entity.BaseEntity;
 import com.example.toongallery.domain.user.entity.User;
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 @Getter
 @Entity
 @Setter
 @NoArgsConstructor
+@Builder
+@AllArgsConstructor
 @Table(name = "Likes")
 public class Like extends BaseEntity {
 
