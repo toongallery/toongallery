@@ -2,8 +2,6 @@ package com.example.toongallery.domain.episode.service;
 
 import com.example.toongallery.domain.common.exception.BaseException;
 import com.example.toongallery.domain.common.exception.ErrorCode;
-import com.example.toongallery.domain.image.service.ImageService;
-import com.example.toongallery.domain.common.util.ImageType;
 import com.example.toongallery.domain.episode.dto.request.EpisodeSaveRequest;
 import com.example.toongallery.domain.episode.dto.response.EpisodeDetailResponseDto;
 import com.example.toongallery.domain.episode.dto.response.EpisodeResponseDto;
@@ -11,6 +9,7 @@ import com.example.toongallery.domain.episode.entity.Episode;
 import com.example.toongallery.domain.episode.repository.EpisodeRepository;
 import com.example.toongallery.domain.image.entity.Image;
 import com.example.toongallery.domain.image.repository.ImageRepository;
+import com.example.toongallery.domain.image.service.ImageService;
 import com.example.toongallery.domain.webtoon.entity.Webtoon;
 import com.example.toongallery.domain.webtoon.repository.WebtoonRepository;
 import lombok.RequiredArgsConstructor;
@@ -18,7 +17,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
 import java.util.List;
 
 @Service
