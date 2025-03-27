@@ -10,6 +10,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/webtoons")
@@ -34,5 +36,17 @@ public class WebtoonController {
             @RequestParam(defaultValue = "10") int size
     ){
         return ResponseEntity.ok(webtoonService.getWebtoons(page, size));
+    }
+
+    //웹툰 검색
+    @GetMapping("/search")
+    public ResponseEntity<Page<WebtoonResponse>> searchWebtoons(
+            @RequestParam(required = false) String keyword,
+            @RequestParam(required = false) List<String> genres,
+            @RequestParam(required = false) String author,
+            @RequestParam(defaultValue = "1") int page,
+            @RequestParam(defaultValue = "10") int size
+            ){
+        return ResponseEntity.ok(webtoonService.searchWebtoons(keyword, genres, author, page, size));
     }
 }

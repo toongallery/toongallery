@@ -7,6 +7,7 @@ import com.example.toongallery.domain.webtoon.enums.WebtoonStatus;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.ColumnDefault;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,10 +36,13 @@ public class Webtoon extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private WebtoonStatus status;//연재 상태
 
+    @ColumnDefault("0.0")
     private Double rate;//별점 평점
 
+    @ColumnDefault("0")
     private Integer favorite_count;//좋아요 수
 
+    @ColumnDefault("0")
     private Integer views;//조회수
 
     public Webtoon(String title, String genres, String thumbnail, String description, DayOfWeek day_of_week, WebtoonStatus status) {

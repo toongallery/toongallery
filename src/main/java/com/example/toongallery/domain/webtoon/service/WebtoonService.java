@@ -106,7 +106,46 @@ public class WebtoonService {
                     webtoon.getThumbnail(),
                     webtoon.getDescription(),
                     webtoon.getDay_of_week(),
-                    webtoon.getStatus()
+                    webtoon.getStatus(),
+                    webtoon.getRate(),
+                    webtoon.getFavorite_count(),
+                    webtoon.getViews()
+            );
+        });
+    }
+
+    @Transactional(readOnly = true)
+    public Page<WebtoonResponse> searchWebtoons(
+            String keyword,
+            List<String> genres,
+            String authorName,
+            int page, int size
+    ){
+        Pageable pageable = PageRequest.of(page-1, size);
+
+        Page<Webtoon> webtoons = webtoonRepository.findBySearch(
+                keyword, genres, authorName, pageable
+        );
+        System.out.println("[조회 결과] 총 " + webtoons.getTotalElements() + "건");
+
+        return webtoons.map(webtoon->{
+            List<String> authorNames = authorService.getAuthorNamesByWebtoonId(webtoon.getId());
+            System.out.println("작가 목록: " + authorNames);
+
+            List<String> genreList = Arrays.asList(webtoon.getGenres().split(","));
+
+            return new WebtoonResponse(
+                    webtoon.getId(),
+                    webtoon.getTitle(),
+                    authorNames,
+                    genreList,
+                    webtoon.getThumbnail(),
+                    webtoon.getDescription(),
+                    webtoon.getDay_of_week(),
+                    webtoon.getStatus(),
+                    webtoon.getRate(),
+                    webtoon.getFavorite_count(),
+                    webtoon.getViews()
             );
         });
     }

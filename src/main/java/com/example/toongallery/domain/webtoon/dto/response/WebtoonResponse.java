@@ -1,13 +1,10 @@
 package com.example.toongallery.domain.webtoon.dto.response;
 
-import com.example.toongallery.domain.author.entity.Author;
-import com.example.toongallery.domain.webtoon.entity.Webtoon;
 import com.example.toongallery.domain.webtoon.enums.DayOfWeek;
 import com.example.toongallery.domain.webtoon.enums.WebtoonStatus;
 import lombok.Getter;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Getter
 public class WebtoonResponse {
@@ -20,8 +17,14 @@ public class WebtoonResponse {
     private final String description;
     private final DayOfWeek dayOfWeek;
     private final WebtoonStatus status;
+    private final Double rate;
+    private final Integer favoriteCount;
+    private final Integer views;
 
-    public WebtoonResponse(Long id, String title, List<String> authors, List<String> genres, String thumbnail, String description, DayOfWeek dayOfWeek, WebtoonStatus status) {
+    public WebtoonResponse(Long id, String title, List<String> authors,
+                           List<String> genres, String thumbnail, String description,
+                           DayOfWeek dayOfWeek, WebtoonStatus status, Double rate,
+                           Integer favoriteCount, Integer views) {
         this.id = id;
         this.title = title;
         this.authors = authors;
@@ -30,5 +33,8 @@ public class WebtoonResponse {
         this.description = description;
         this.dayOfWeek = dayOfWeek;
         this.status = status;
+        this.rate = rate != null ? rate : 0.0;
+        this.favoriteCount = favoriteCount != null ? favoriteCount : 0;
+        this.views = views != null ? views : 0;
     }
 }

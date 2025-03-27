@@ -5,6 +5,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface WebtoonRepository extends JpaRepository<Webtoon, Long> {
+public interface WebtoonRepository extends JpaRepository<Webtoon, Long>, WebtoonRepositoryCustom {
     Page<Webtoon> findAll(Pageable pageable);
 }
