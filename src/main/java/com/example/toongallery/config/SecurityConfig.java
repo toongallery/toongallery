@@ -43,8 +43,9 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(request -> request.getRequestURI().startsWith("/auth")).permitAll()
                         .requestMatchers("/test").hasAuthority(UserRole.Authority.ADMIN)
-                        //.requestMatchers("/categories/**").hasAuthority(UserRole.Authority.ADMIN)
+                        .requestMatchers("/categories/**").hasAuthority(UserRole.Authority.ADMIN)
                         .requestMatchers("/open").permitAll()
+                        .requestMatchers("/webtoons/**").permitAll()
                         .requestMatchers("/like/**").permitAll()//시큐리티 없이 like의 동작을 테스트 하기위해 임시로 작성
                         .requestMatchers("/favorite/**  ").permitAll()//시큐리티 없이 favorite의 동작을 테스트 하기위해 임시로 작성
                         .anyRequest().authenticated()
