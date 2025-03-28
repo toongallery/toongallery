@@ -197,6 +197,5 @@ class LikeServiceTest {
 
         // Then
         assertThat(result).isEqualTo(expectedLikeCount); // 예상한 좋아요 개수와 동일한지 확인
-        System.out.println("좋아요 갯수 : " + result);
     }
 }
