@@ -30,7 +30,7 @@ public class RateService {
         optionalRate.ifPresentOrElse(
                 existRate -> existRate.setRates(rate), () -> {
                     Episode episode = episodeRepository.findById(episodeId)
-                            .orElseThrow(() -> new BaseException(ErrorCode.EPISODE_NOT_EXIST, null));
+                            .orElseThrow(() -> new BaseException(ErrorCode.EPISODE_NOT_FOUND, null));
                     User user = userRepository.findById(userId)
                             .orElseThrow(() -> new BaseException(ErrorCode.USER_NOT_EXIST, null));
 

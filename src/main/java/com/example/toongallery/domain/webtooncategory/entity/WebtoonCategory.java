@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @Entity
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor//(access = AccessLevel.PROTECTED)
 @Table(name = "webtooncategory")
 public class WebtoonCategory {
     @Id
@@ -17,10 +17,18 @@ public class WebtoonCategory {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "webtoon_id", nullable = false)
+    private Webtoon webtoon;
+
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id", nullable = false)
     private Category category;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "webtoon_id", nullable = false)
-    private Webtoon webtoon;
+    public WebtoonCategory(Category category,Webtoon webtoon) {
+        this.category = category;
+        this.webtoon = webtoon;
+    }
+    public Long getCategoryId(){
+        return category.getId();
+    }
 }

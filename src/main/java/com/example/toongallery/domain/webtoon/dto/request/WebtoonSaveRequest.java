@@ -4,6 +4,7 @@ import com.example.toongallery.domain.webtoon.enums.DayOfWeek;
 import com.example.toongallery.domain.webtoon.enums.WebtoonStatus;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -23,17 +24,17 @@ public class WebtoonSaveRequest {
     private List<String> authors;
 
     @NotEmpty
-    private List<String> genres;
+    private List<String> category;
 
-    @NotBlank
-    private String thumbnail;
+//    @NotBlank
+//    private String thumbnail;
 
     @NotBlank
     private String description;
 
-    @NotBlank
+    @NotNull
     private DayOfWeek day_of_week;
 
-    @NotBlank
-    private WebtoonStatus status;
+//    @NotBlank
+//    private WebtoonStatus status;
 }

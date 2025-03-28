@@ -2,13 +2,11 @@ package com.example.toongallery.domain.episode.service;
 
 import com.example.toongallery.domain.common.exception.BaseException;
 import com.example.toongallery.domain.common.exception.ErrorCode;
-import com.example.toongallery.domain.episode.entity.Episode;
-import com.example.toongallery.domain.episode.repository.EpisodeRepository;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
 import com.example.toongallery.domain.episode.dto.request.EpisodeSaveRequest;
 import com.example.toongallery.domain.episode.dto.response.EpisodeDetailResponseDto;
+import com.example.toongallery.domain.episode.dto.response.EpisodeImageUpdateResponse;
 import com.example.toongallery.domain.episode.dto.response.EpisodeResponseDto;
+import com.example.toongallery.domain.episode.dto.response.EpisodeSaveResponse;
 import com.example.toongallery.domain.episode.entity.Episode;
 import com.example.toongallery.domain.episode.repository.EpisodeRepository;
 import com.example.toongallery.domain.image.entity.Image;
@@ -33,7 +31,7 @@ public class EpisodeService {
     private final ImageService imageService;
 
     @Transactional
-    public Episode saveEpisode(
+    public EpisodeSaveResponse saveEpisode(
             Long webtoonId,
             EpisodeSaveRequest dto,
             MultipartFile thumbnailFile,
@@ -41,32 +39,45 @@ public class EpisodeService {
     ) {
         // 1. 웹툰 조회
         Webtoon webtoon = webtoonRepository.findById(webtoonId)
-                .orElseThrow(() -> new BaseException(ErrorCode.SERVER_NOT_WORK, null));
+                .orElseThrow(() -> new BaseException(ErrorCode.WEBTOON_NOT_FOUND, null));
 
-        // 2. 다음 회차 번호 계산
+        // 2. 중복 제목 확인
+        if (episodeRepository.existsByWebtoonIdAndTitle(webtoonId, dto.getTitle())) {
+            throw new BaseException(ErrorCode.DUPLICATE_EPISODE_TITLE, "이미 존재하는 에피소드 제목입니다.");
+        }
+
+        // 3. 다음 회차 번호 계산
         int nextEpisodeNumber = episodeRepository.findMaxEpisodeNumberByWebtoonId(webtoonId)
                 .orElse(0) + 1;
 
-        // 3. 썸네일 업로드 → URL 반환 → 에피소드에 반영
+        // 4. 썸네일 업로드 → URL 반환 → 에피소드에 반영
         String thumbnailUrl = imageService.uploadEpisodeThumbnail(
                 webtoonId,
                 nextEpisodeNumber,
                 thumbnailFile
         );
 
-        // 4. 에피소드 저장 (썸네일은 null 상태로 우선 저장)
+        // 5. 에피소드 저장 (썸네일은 null 상태로 우선 저장)
         Episode episode = Episode.of(dto.getTitle(), nextEpisodeNumber, thumbnailUrl, webtoon);
         episodeRepository.save(episode);
 
-        // 5. 본문 이미지 업로드 및 저장
-        imageService.uploadEpisodeImages(
+        // 6. 본문 이미지 업로드 및 저장
+        List<Image> images = imageService.uploadEpisodeImages(
                 webtoonId,
                 nextEpisodeNumber,
                 imageFiles,
                 episode
         );
+        List<String> imageUrls = images.stream()
+                .map(Image::getImageUrl)
+                .toList();
 
-        return episode;
+        return new EpisodeSaveResponse(
+                episode.getEpisodeNumber(),
+                episode.getTitle(),
+                episode.getThumbnailUrl(),
+                imageUrls
+        );
     }
 
     @Transactional(readOnly = true)
@@ -105,4 +116,63 @@ public class EpisodeService {
         return episodeRepository.findById(episodeId).orElseThrow(() ->
                 new BaseException(ErrorCode.EPISODE_NOT_FOUND, null));
     }
+
+    @Transactional
+    public void updateEpisodeTitle(Long webtoonId, Long episodeId, String newTitle) {
+        Episode episode = episodeRepository.findByIdAndWebtoonId(episodeId, webtoonId)
+                .orElseThrow(() -> new BaseException(ErrorCode.EPISODE_NOT_FOUND, "회차 없음"));
+
+        if (episodeRepository.existsByWebtoonIdAndTitle(webtoonId, newTitle)) {
+            throw new BaseException(ErrorCode.DUPLICATE_EPISODE_TITLE, null);
+        }
+
+
+        episode.updateTitle(newTitle);
+    }
+
+    @Transactional
+    public String updateEpisodeThumbnail(Long webtoonId, Long episodeId, MultipartFile newThumbnailFile) {
+        // 1. 에피소드 조회
+        Episode episode = episodeRepository.findByIdAndWebtoonId(episodeId, webtoonId)
+                .orElseThrow(() -> new BaseException(ErrorCode.EPISODE_NOT_FOUND, "회차 없음"));
+
+        int episodeNumber = episode.getEpisodeNumber();
+
+        // 2. 기존 썸네일 삭제
+        imageService.deleteEpisodeThumbnail(webtoonId, episodeNumber);
+
+        // 3. 새 썸네일 업로드
+        String newUrl = imageService.uploadEpisodeThumbnail(
+                webtoonId,
+                episodeNumber,
+                newThumbnailFile
+        );
+
+        // 4. 에피소드에 반영
+        episode.updateThumbnail(newUrl);
+        return newUrl;
+    }
+
+    @Transactional
+    public EpisodeImageUpdateResponse updateEpisodeImages(Long webtoonId, Long episodeId, List<MultipartFile> newImageFiles) {
+        // 1. 에피소드 존재 확인
+        Episode episode = episodeRepository.findByIdAndWebtoonId(episodeId, webtoonId)
+                .orElseThrow(() -> new BaseException(ErrorCode.EPISODE_NOT_FOUND, "회차 없음"));
+
+        // 2. 기존 이미지 삭제
+        imageService.deleteEpisodeImages(episodeId);
+
+        // 3. 웹툰 ID, 에피소드 번호로 새 이미지 업로드
+        int episodeNumber = episode.getEpisodeNumber();
+
+        List<Image> images = imageService.uploadEpisodeImages(webtoonId, episodeNumber, newImageFiles, episode);
+
+        // 4. 업로드된 이미지 URL만 추출해서 응답
+        List<String> imageUrls = images.stream()
+                .map(Image::getImageUrl)
+                .toList();
+
+        return new EpisodeImageUpdateResponse(imageUrls);
+    }
+
 }
