@@ -4,8 +4,6 @@ import com.example.toongallery.domain.common.dto.AuthUser;
 import com.example.toongallery.domain.webtoon.dto.request.WebtoonSaveRequest;
 import com.example.toongallery.domain.webtoon.dto.response.WebtoonPopularResponse;
 import com.example.toongallery.domain.webtoon.dto.response.WebtoonResponse;
-import com.example.toongallery.domain.webtoon.dto.response.WebtoonPageResponse;
-import com.example.toongallery.domain.webtoon.entity.Webtoon;
 import com.example.toongallery.domain.webtoon.service.WebtoonService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;

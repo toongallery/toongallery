@@ -88,7 +88,7 @@ public class WebtoonService {
             //작가가 아닌 사용자가 포함되었는지 체크
             List<User> nonAuthors = authors.stream()
                     .filter(user->user.getUserRole() != UserRole.ROLE_AUTHOR)
-                    .collect(Collectors.toList());
+                    .toList();
 
         if (!notFoundAuthors.isEmpty()) {
             System.out.println("[ERROR] 존재하지 않는 작가: " + notFoundAuthors);
@@ -178,13 +178,14 @@ public class WebtoonService {
 
             List<String> authorNames = authorService.getAuthorNamesByWebtoonId(webtoon.getId());
 
-            List<String> genreList = Arrays.asList(webtoon.getGenres().split(","));
+            //List<String> genreList = Arrays.asList(webtoon.getGenres().split(","));
+            List<String> categoryList = webtoonCategoryService.getCategoryNamesByWebtoonId(webtoon.getId());
 
             return new WebtoonResponse(
                     webtoon.getId(),
                     webtoon.getTitle(),
                     authorNames,
-                    genreList,
+                    categoryList,
                     webtoon.getThumbnail(),
                     webtoon.getDescription(),
                     webtoon.getDay_of_week(),
@@ -214,13 +215,13 @@ public class WebtoonService {
 
             List<String> authorNames = authorService.getAuthorNamesByWebtoonId(webtoon.getId());
 
-            List<String> genreList = Arrays.asList(webtoon.getGenres().split(","));
-
+            //List<String> genreList = Arrays.asList(webtoon.getGenres().split(","));
+            List<String> categoryList = webtoonCategoryService.getCategoryNamesByWebtoonId(webtoon.getId());
             return new WebtoonResponse(
                     webtoon.getId(),
                     webtoon.getTitle(),
                     authorNames,
-                    genreList,
+                    categoryList,
                     webtoon.getThumbnail(),
                     webtoon.getDescription(),
                     webtoon.getDay_of_week(),
@@ -314,4 +315,7 @@ public class WebtoonService {
                 ))
                 .collect(Collectors.toList());
     }
+
+    // 웹툰 제목 변경
+    // 웹툰 작가
 }
