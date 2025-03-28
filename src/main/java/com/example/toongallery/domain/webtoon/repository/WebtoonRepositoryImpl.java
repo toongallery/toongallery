@@ -31,44 +31,43 @@ public class WebtoonRepositoryImpl implements WebtoonRepositoryCustom{
             String authorName,
             Pageable pageable
     ) {
-//        QWebtoon webtoon = QWebtoon.webtoon;
-//        QAuthor author = QAuthor.author;
-//        QUser user = QUser.user;
-//        QWebtoonCategory webtoonCategory = QWebtoonCategory.webtoonCategory;
-//
-//        JPAQuery<Webtoon> query = queryFactory
-//                .selectFrom(webtoon)
-//                .leftJoin(author).on(author.webtoon.id.eq(webtoon.id))
-//                .leftJoin(user).on(author.user.id.eq(user.id))
-//                .where(
-//                        titleContains(keyword),
-//                        genresContain(genres),
-//                        authorNameEquals(authorName)
-//                )
-//                .groupBy(webtoon.id)
-//                .orderBy(webtoon.views.desc());
-//
-//        long total = query.fetchCount();
-//        List<Webtoon> results = query
-//                .offset(pageable.getOffset())
-//                .limit(pageable.getPageSize())
-//                .fetch();
-//
-//        return new PageImpl<>(results, pageable, total);
-        return null;
+        QWebtoon webtoon = QWebtoon.webtoon;
+        QAuthor author = QAuthor.author;
+        QUser user = QUser.user;
+        QWebtoonCategory webtoonCategory = QWebtoonCategory.webtoonCategory;
+
+        JPAQuery<Webtoon> query = queryFactory
+                .selectFrom(webtoon)
+                .leftJoin(author).on(author.webtoon.id.eq(webtoon.id))
+                .leftJoin(user).on(author.user.id.eq(user.id))
+                .where(
+                        titleContains(keyword),
+                        genresContain(genres),
+                        authorNameEquals(authorName)
+                )
+                .groupBy(webtoon.id)
+                .orderBy(webtoon.views.desc());
+
+        long total = query.fetch().size();
+        List<Webtoon> results = query
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .fetch();
+
+        return new PageImpl<>(results, pageable, total);
     }
 
     private BooleanExpression titleContains(String keyword) {
         return StringUtils.hasText(keyword) ? webtoon.title.containsIgnoreCase(keyword) : null;
     }
 
-//    private BooleanExpression genresContain(List<String> genres) {
-//        return (genres != null && !genres.isEmpty()) ?
-//                genres.stream()
-//                        .map(genre->webtoon.genres.like("%"+genre+"%"))
-//                        .reduce(BooleanExpression::or)
-//                        .orElse(null) : null;
-//    }
+    private BooleanExpression genresContain(List<String> genres) {
+        return (genres != null && !genres.isEmpty()) ?
+                genres.stream()
+                        .map(genre->webtoon.genres.like("%"+genre+"%"))
+                        .reduce(BooleanExpression::or)
+                        .orElse(null) : null;
+    }
 
     private BooleanExpression authorNameEquals(String authorName) {
         return StringUtils.hasText(authorName) ? user.name.eq(authorName) : null;
