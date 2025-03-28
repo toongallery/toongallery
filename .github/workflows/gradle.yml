@@ -63,22 +63,22 @@ jobs:
       - name: Show Build Summary
         run: echo "✅ Docker 이미지 빌드 및 푸시 완료!"
 
-deploy:
-  needs: docker  # Docker 이미지 빌드 후 실행
-  runs-on: ubuntu-latest
+  deploy:
+    needs: docker  # Docker 이미지 빌드 후 실행
+    runs-on: ubuntu-latest
 
-  steps:
-    - name: Checkout Repository
-      uses: actions/checkout@v4
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
 
-    - name: Deploy to EC2
-      uses: appleboy/ssh-action@v1.0.3
-      with:
-        host: ${{ secrets.EC2_HOST }}
-        username: ${{ secrets.EC2_USER }}
-        key: ${{ secrets.EC2_SSH_KEY }}
-        script: |
-          docker stop myapp || true
-          docker rm myapp || true
-          docker pull ${{ secrets.DOCKERHUB_USERNAME }}/myapp:latest
-          docker run -d --name myapp -p 80:8080 ${{ secrets.DOCKERHUB_USERNAME }}/myapp:latest
+      - name: Deploy to EC2
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USER }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script: |
+            docker stop myapp || true
+            docker rm myapp || true
+            docker pull ${{ secrets.DOCKERHUB_USERNAME }}/myapp:latest
+            docker run -d --name myapp -p 80:8080 ${{ secrets.DOCKERHUB_USERNAME }}/myapp:latest
