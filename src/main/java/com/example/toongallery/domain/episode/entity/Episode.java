@@ -37,8 +37,12 @@ public class Episode extends BaseEntity {
         return episode;
     }
 
-    public Episode updateThumbnail(String thumbnailUrl) {
+    public void updateThumbnail(String thumbnailUrl) {
         this.thumbnailUrl = thumbnailUrl;
-        return this;
     }
+
+    public void updateTitle(String title) {
+        this.title = title;
+    }
+
 }

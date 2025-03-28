@@ -1,6 +1,5 @@
 package com.example.toongallery.domain.webtoon.entity;
 
-import com.example.toongallery.domain.author.entity.Author;
 import com.example.toongallery.domain.common.entity.BaseEntity;
 import com.example.toongallery.domain.webtoon.enums.DayOfWeek;
 import com.example.toongallery.domain.webtoon.enums.WebtoonStatus;
@@ -9,9 +8,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.ColumnDefault;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @Getter
 @Setter
@@ -26,8 +22,6 @@ public class Webtoon extends BaseEntity {
 
     @Column(nullable = false)
     private String title;//제목
-
-    private String genres;//장르
 
     private String thumbnail;//썸네일
 
@@ -46,14 +40,36 @@ public class Webtoon extends BaseEntity {
     private Integer favorite_count;//좋아요 수
 
     @ColumnDefault("0")
-    private Integer views;//조회수
+    private Integer views = 0;//조회수
 
-    public Webtoon(String title, String genres, String thumbnail, String description, DayOfWeek day_of_week, WebtoonStatus status) {
+    public Webtoon(String title, String thumbnail, String description, DayOfWeek day_of_week, WebtoonStatus status) {
         this.title = title;
-        this.genres = genres;
         this.thumbnail = thumbnail;
         this.description = description;
         this.day_of_week = day_of_week;
         this.status = status;
+    }
+
+    public static Webtoon of(String title, String thumbnail, String description,
+                             DayOfWeek day_of_week, WebtoonStatus status){
+        Webtoon webtoon = new Webtoon();
+        webtoon.title = title;
+        webtoon.thumbnail = thumbnail;
+        webtoon.description = description;
+        webtoon.day_of_week = day_of_week;
+        webtoon.status = status;
+        return webtoon;
+    }
+
+    public void updateThumbnail(String thumbnailUrl) {
+        this.thumbnail = thumbnailUrl;
+    }
+
+    public void incrementView(){
+        this.views = (this.views == null) ? 1:this.views + 1;
+    }
+
+    public void view(Integer cacheView){
+        this.views = cacheView;
     }
 }

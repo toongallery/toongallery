@@ -3,6 +3,7 @@ package com.example.toongallery.domain.common.util;
 import com.example.toongallery.domain.common.exception.BaseException;
 import com.example.toongallery.domain.common.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
@@ -26,12 +27,7 @@ public class FileUpLoader {
     public String upload(MultipartFile file, String path, String filename) {
         try {
             // 확장자 검사
-            String contentType = file.getContentType();
-            if (contentType == null || (!contentType.startsWith("image/png") &&
-                    !contentType.startsWith("image/jpeg") &&
-                    !contentType.startsWith("image/webp"))) {
-                throw new IllegalArgumentException("지원하지 않는 이미지 형식입니다. (png, jpeg, webp만 허용)");
-            }
+            String contentType = validateType(file);
 
             // 경로/파일명 조합
             String key = path.endsWith("/") ? path + filename : path + "/" + filename;
@@ -61,5 +57,16 @@ public class FileUpLoader {
         } catch (Exception e) {
             throw new BaseException(ErrorCode.SERVER_NOT_WORK, "S3 삭제 실패: " + e.getMessage());
         }
+    }
+
+    private static String validateType(MultipartFile file) {
+        String contentType = file.getContentType();
+        if (contentType == null || (!contentType.startsWith("image/png") &&
+                !contentType.startsWith("image/jpeg") &&
+                !contentType.startsWith("image/webp"))) {
+            throw new BaseException(ErrorCode.UNSUPPORTED_FILE_TYPE,contentType);
+
+        }
+        return contentType;
     }
 }

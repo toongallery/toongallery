@@ -4,6 +4,7 @@ import com.example.toongallery.domain.author.entity.QAuthor;
 import com.example.toongallery.domain.user.entity.QUser;
 import com.example.toongallery.domain.webtoon.entity.QWebtoon;
 import com.example.toongallery.domain.webtoon.entity.Webtoon;
+import com.example.toongallery.domain.webtooncategory.entity.QWebtoonCategory;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -33,6 +34,7 @@ public class WebtoonRepositoryImpl implements WebtoonRepositoryCustom {
         QWebtoon webtoon = QWebtoon.webtoon;
         QAuthor author = QAuthor.author;
         QUser user = QUser.user;
+        QWebtoonCategory webtoonCategory = QWebtoonCategory.webtoonCategory;
 
         JPAQuery<Webtoon> query = queryFactory
                 .selectFrom(webtoon)
@@ -46,7 +48,7 @@ public class WebtoonRepositoryImpl implements WebtoonRepositoryCustom {
                 .groupBy(webtoon.id)
                 .orderBy(webtoon.views.desc());
 
-        long total = query.fetchCount();
+        long total = query.fetch().size();
         List<Webtoon> results = query
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
