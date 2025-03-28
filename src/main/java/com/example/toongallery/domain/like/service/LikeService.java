@@ -2,6 +2,8 @@ package com.example.toongallery.domain.like.service;
 
 import com.example.toongallery.domain.comment.entity.Comment;
 import com.example.toongallery.domain.comment.repository.CommentRepository;
+import com.example.toongallery.domain.common.exception.BaseException;
+import com.example.toongallery.domain.common.exception.ErrorCode;
 import com.example.toongallery.domain.like.entity.Like;
 import com.example.toongallery.domain.like.repository.LikeRepository;
 import com.example.toongallery.domain.user.entity.User;
@@ -9,8 +11,6 @@ import com.example.toongallery.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.time.LocalDateTime;
 
 @Service
 @Transactional
@@ -29,13 +29,14 @@ public class LikeService {
         }
 
         Comment comment = commentRepository.findById(commentId)
-                .orElseThrow(() -> new IllegalArgumentException("댓글이 존재하지 않습니다."));
+                .orElseThrow(() -> new BaseException(ErrorCode.COMMENT_NOT_EXIST, null));
         User user = userRepository.findById(userId)
-                .orElseThrow(()-> new IllegalArgumentException("사용자가 존재하지 않습니다."));
+                .orElseThrow(()-> new BaseException(ErrorCode.USER_NOT_EXIST, null));
 
-        Like like = new Like();
-        like.setComment(comment);
-        like.setUser(user);
+        Like like = Like.builder()
+                .comment(comment)
+                .user(user)
+                .build();
 
         likeRepository.save(like);
         return true;

@@ -4,6 +4,7 @@ import com.example.toongallery.domain.author.entity.QAuthor;
 import com.example.toongallery.domain.user.entity.QUser;
 import com.example.toongallery.domain.webtoon.entity.QWebtoon;
 import com.example.toongallery.domain.webtoon.entity.Webtoon;
+import com.example.toongallery.domain.webtooncategory.entity.QWebtoonCategory;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;

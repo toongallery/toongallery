@@ -4,13 +4,16 @@ import com.example.toongallery.domain.common.dto.AuthUser;
 import com.example.toongallery.domain.webtoon.dto.request.WebtoonSaveRequest;
 import com.example.toongallery.domain.webtoon.dto.response.WebtoonPopularResponse;
 import com.example.toongallery.domain.webtoon.dto.response.WebtoonResponse;
+import com.example.toongallery.domain.webtoon.dto.response.WebtoonPageResponse;
 import com.example.toongallery.domain.webtoon.entity.Webtoon;
 import com.example.toongallery.domain.webtoon.service.WebtoonService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -23,12 +26,13 @@ public class WebtoonController {
 
     //웹툰 생성
     @PostMapping
-    public ResponseEntity<String> createWebtoon(
-            @RequestBody WebtoonSaveRequest webtoonSaveRequest,
-            @AuthenticationPrincipal AuthUser authUser
+    public ResponseEntity<WebtoonResponse> createWebtoon(
+            @AuthenticationPrincipal AuthUser authUser,
+            @Valid @RequestPart(value = "json") WebtoonSaveRequest webtoonSaveRequest,
+            @RequestPart(value = "thumbnail")MultipartFile thumbnailFile
             ){
-        webtoonService.saveWebtoon(authUser, webtoonSaveRequest);
-        return ResponseEntity.ok("웹툰 등록이 완료되었습니다!");
+        WebtoonResponse webtoon = webtoonService.saveWebtoon(authUser, webtoonSaveRequest, thumbnailFile);
+        return ResponseEntity.ok(webtoon);
     }
 
     //웹툰 전체 조회

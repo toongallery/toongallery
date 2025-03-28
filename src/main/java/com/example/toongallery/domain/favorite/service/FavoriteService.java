@@ -2,6 +2,8 @@ package com.example.toongallery.domain.favorite.service;
 
 import com.example.toongallery.domain.comment.entity.Comment;
 import com.example.toongallery.domain.comment.repository.CommentRepository;
+import com.example.toongallery.domain.common.exception.BaseException;
+import com.example.toongallery.domain.common.exception.ErrorCode;
 import com.example.toongallery.domain.favorite.entity.Favorite;
 import com.example.toongallery.domain.favorite.repository.FavoriteRepository;
 import com.example.toongallery.domain.like.entity.Like;
@@ -31,13 +33,14 @@ public class FavoriteService {
         }
 
         Webtoon webtoon = webtoonRepository.findById(webtoonId)
-                .orElseThrow(() -> new IllegalArgumentException("댓글이 존재하지 않습니다."));
+                .orElseThrow(() -> new BaseException(ErrorCode.COMMENT_NOT_EXIST,null));
         User user = userRepository.findById(userId)
-                .orElseThrow(()-> new IllegalArgumentException("사용자가 존재하지 않습니다."));
+                .orElseThrow(()-> new BaseException(ErrorCode.USER_NOT_EXIST,null));
 
-        Favorite favorite = new Favorite();
-        favorite.setWebtoon(webtoon);
-        favorite.setUser(user);
+        Favorite favorite = Favorite.builder()
+                .webtoon(webtoon)
+                .user(user)
+                .build();
 
         favoriteRepository.save(favorite);
         return true;
