@@ -48,7 +48,7 @@ public class WebtoonService {
                 });
 
         System.out.println("[2] 현재 유저 역할: " + currentUser.getUserRole());
-        if (currentUser.getUserRole() != UserRole.ROLE_ADMIN) {
+        if (currentUser.getUserRole() != UserRole.ROLE_AUTHOR) {
             System.out.println("[ERROR] 권한 없음 - 관리자 아님");
             throw new BaseException(ErrorCode.INVALID_USER_ROLE, "작가만 웹툰 등록 가능");
         }
@@ -73,7 +73,7 @@ public class WebtoonService {
         }
 
         boolean hasNonAuthor = authors.stream()
-                .anyMatch(user -> user.getUserRole() != UserRole.ROLE_ADMIN);
+                .anyMatch(user -> user.getUserRole() != UserRole.ROLE_AUTHOR);
         if (hasNonAuthor) {
             System.out.println("[ERROR] 작가가 아닌 유저 포함됨");
             throw new BaseException(ErrorCode.INVALID_USER_ROLE, "작가가 아닌 유저 포함됨");
