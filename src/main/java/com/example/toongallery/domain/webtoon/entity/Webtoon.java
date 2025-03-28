@@ -43,7 +43,7 @@ public class Webtoon extends BaseEntity {
     private Integer favorite_count;//좋아요 수
 
     @ColumnDefault("0")
-    private Integer views;//조회수
+    private Integer views = 0;//조회수
 
     public Webtoon(String title, String genres, String thumbnail, String description, DayOfWeek day_of_week, WebtoonStatus status) {
         this.title = title;
@@ -52,5 +52,13 @@ public class Webtoon extends BaseEntity {
         this.description = description;
         this.day_of_week = day_of_week;
         this.status = status;
+    }
+
+    public void incrementView(){
+        this.views = (this.views == null) ? 1:this.views + 1;
+    }
+
+    public void view(Integer cacheView){
+        this.views = cacheView;
     }
 }

@@ -23,7 +23,7 @@ public enum ErrorCode {
     INVALID_REFRESH_TOKEN("유효하지 않은 refresh token 입니다.", HttpStatus.BAD_REQUEST),
     USERID_NOT_MATCH("유저 id가 일치하지 않습니다." , HttpStatus.BAD_REQUEST),
     //웹툰 관련 에러 코드
-
+    WEBTOON_NOT_FOUND("웹툰을 찾을 수 없습니다.", HttpStatus.NOT_FOUND),
     //에피소드 관련 에러 코드
     EPISODE_NOT_FOUND("에피소드를 찾을 수 없습니다.", HttpStatus.NOT_FOUND),
     //카테고리 관련 에러 코드

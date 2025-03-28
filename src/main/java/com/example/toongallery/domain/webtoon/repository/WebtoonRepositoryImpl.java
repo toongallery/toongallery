@@ -46,7 +46,7 @@ public class WebtoonRepositoryImpl implements WebtoonRepositoryCustom{
                 .groupBy(webtoon.id)
                 .orderBy(webtoon.views.desc());
 
-        long total = query.fetchCount();
+        long total = query.fetch().size();
         List<Webtoon> results = query
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
