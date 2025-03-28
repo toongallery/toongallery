@@ -14,7 +14,7 @@ public interface RateRepository extends JpaRepository<Rate, Long> {
     @Query("SELECT COALESCE(AVG(r.rates),0.0) FROM Rate r WHERE r.episode.id = :episodeId")
     Double findAverageRateByEpisodeId(@Param("episodeId") Long episodeId);
 
-    @Query("SELECT AVG(r.rate) FROM Rate r WHERE r.episode.webtoon.id = :webtoonId")
+    @Query("SELECT AVG(r.rates) FROM Rate r WHERE r.episode.webtoon.id = :webtoonId")
     Double findAverageRateByWebtoonId(@Param("webtoonId") Long webtoonId);
 
     // 사용자가 특정 에피소드에 준 별점 조회

@@ -7,10 +7,12 @@ import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
 @Getter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Setter
+@NoArgsConstructor//(access = AccessLevel.PROTECTED)
 @Table(name = "comments")
 public class Comment extends BaseEntity {
     @Id
