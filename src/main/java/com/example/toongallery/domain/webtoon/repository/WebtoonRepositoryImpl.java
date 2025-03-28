@@ -34,6 +34,7 @@ public class WebtoonRepositoryImpl implements WebtoonRepositoryCustom{
         QWebtoon webtoon = QWebtoon.webtoon;
         QAuthor author = QAuthor.author;
         QUser user = QUser.user;
+        QWebtoonCategory webtoonCategory = QWebtoonCategory.webtoonCategory;
 
         JPAQuery<Webtoon> query = queryFactory
                 .selectFrom(webtoon)
