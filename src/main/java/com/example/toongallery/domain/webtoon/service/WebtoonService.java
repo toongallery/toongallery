@@ -7,6 +7,7 @@ import com.example.toongallery.domain.common.dto.AuthUser;
 import com.example.toongallery.domain.common.exception.BaseException;
 import com.example.toongallery.domain.common.exception.ErrorCode;
 import com.example.toongallery.domain.image.service.ImageService;
+import com.example.toongallery.domain.rate.service.RateService;
 import com.example.toongallery.domain.user.entity.User;
 import com.example.toongallery.domain.user.enums.UserRole;
 import com.example.toongallery.domain.user.repository.UserRepository;
@@ -54,6 +55,7 @@ public class WebtoonService {
     private final ImageService imageService;
     private final CacheManager cacheManager;
     private final WebtoonViewLogRepository webtoonViewLogRepository;
+    private final RateService rateService;
 
     @Transactional
     public WebtoonResponse saveWebtoon(AuthUser authUser, WebtoonSaveRequest request, MultipartFile thumbnailFile) {
@@ -178,7 +180,7 @@ public class WebtoonService {
 
             List<String> authorNames = authorService.getAuthorNamesByWebtoonId(webtoon.getId());
 
-            List<String> genreList = Arrays.asList(webtoon.getGenres().split(","));
+            //List<String> genreList = Arrays.asList(webtoon.getGenres().split(","));
 
             return new WebtoonResponse(
                     webtoon.getId(),
@@ -214,7 +216,7 @@ public class WebtoonService {
 
             List<String> authorNames = authorService.getAuthorNamesByWebtoonId(webtoon.getId());
 
-            List<String> genreList = Arrays.asList(webtoon.getGenres().split(","));
+            //List<String> genreList = Arrays.asList(webtoon.getGenres().split(","));
 
             return new WebtoonResponse(
                     webtoon.getId(),
@@ -313,5 +315,18 @@ public class WebtoonService {
                         i+1, webtoons.get(i)
                 ))
                 .collect(Collectors.toList());
+    }
+
+    //평점 조회
+    @Transactional(readOnly = true)
+    public Webtoon getWebtoonWithAverageRate(Long webtoonId) {
+        Webtoon webtoon = webtoonRepository.findById(webtoonId)
+                .orElseThrow(() -> new BaseException(ErrorCode.WEBTOON_NOT_FOUND, null));
+
+        // 평균 평점 설정
+        Double averageRate = rateService.getAverageRateByWebtoonId(webtoonId);
+        webtoon.setRate(averageRate);
+
+        return webtoon;
     }
 }

@@ -37,15 +37,7 @@ public class WebtoonController {
 
     //웹툰 전체 조회
     @GetMapping
-    public ResponseEntity<Page<WebtoonResponse>> getWebtoons(
-            @RequestParam(defaultValue = "1") int page,
-            @RequestParam(defaultValue = "10") int size
-    ){
-        return ResponseEntity.ok(webtoonService.getWebtoons(page, size));
-    }
-
-    //웹툰 검색
-    @GetMapping("/search")
+   Mapping("/search")
     public ResponseEntity<Page<WebtoonResponse>> searchWebtoons(
             @RequestParam(required = false) String keyword,
             @RequestParam(required = false) List<String> genres,

@@ -100,7 +100,7 @@ public class RateService {
         Double averageRate = rateRepository.findAverageRateByWebtoonId(webtoonId);
         if (averageRate != null) {
             Webtoon webtoon = episodeRepository.findById(webtoonId)
-                    .orElseThrow(() -> new BaseException(ErrorCode.WEBTOON_NOT_EXIST,null))
+                    .orElseThrow(() -> new BaseException(ErrorCode.WEBTOON_NOT_FOUND,null))
                     .getWebtoon();
             webtoon.setRate(averageRate);
         }

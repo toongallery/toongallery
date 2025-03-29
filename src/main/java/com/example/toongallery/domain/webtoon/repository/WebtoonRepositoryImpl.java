@@ -61,13 +61,13 @@ public class WebtoonRepositoryImpl implements WebtoonRepositoryCustom {
         return StringUtils.hasText(keyword) ? webtoon.title.containsIgnoreCase(keyword) : null;
     }
 
-    private BooleanExpression genresContain(List<String> genres) {
-        return (genres != null && !genres.isEmpty()) ?
-                genres.stream()
-                        .map(genre -> webtoon.genres.like("%" + genre + "%"))
-                        .reduce(BooleanExpression::or)
-                        .orElse(null) : null;
-    }
+//    private BooleanExpression genresContain(List<String> genres) {
+//        return (genres != null && !genres.isEmpty()) ?
+//                genres.stream()
+//                        .map(genre -> webtoon.genres.like("%" + genre + "%"))
+//                        .reduce(BooleanExpression::or)
+//                        .orElse(null) : null;
+//    }
 
     private BooleanExpression authorNameEquals(String authorName) {
         return StringUtils.hasText(authorName) ? user.name.eq(authorName) : null;
