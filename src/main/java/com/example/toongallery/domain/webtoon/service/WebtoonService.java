@@ -57,18 +57,10 @@ public class WebtoonService {
 
     @Transactional
     public WebtoonResponse saveWebtoon(AuthUser authUser, WebtoonSaveRequest request, MultipartFile thumbnailFile) {
-        // [1] 로그인 유저 확인 및 권한 체크
-        System.out.println("[1] 웹툰 등록 요청자: " + authUser.getEmail());
-
         User currentUser = userRepository.findByEmail(authUser.getEmail())
-                .orElseThrow(() -> {
-                    System.out.println("[ERROR] 유저 없음");
-                    return new BaseException(ErrorCode.USER_NOT_EXIST, null);
-                });
+                .orElseThrow(() -> new BaseException(ErrorCode.USER_NOT_EXIST, null));
 
-        System.out.println("[2] 현재 유저 역할: " + currentUser.getUserRole());
         if (currentUser.getUserRole() != UserRole.ROLE_AUTHOR) {
-            System.out.println("[ERROR] 권한 없음 - 관리자 아님");
             throw new BaseException(ErrorCode.INVALID_USER_ROLE, "작가만 웹툰 등록 가능");
         }
 
@@ -76,29 +68,24 @@ public class WebtoonService {
         List<String> requestedAuthorNames = Optional.ofNullable(request.getAuthors())
                 .orElse(Collections.emptyList());
 
-        System.out.println("[3] 요청된 작가 목록: " + requestedAuthorNames);
-
         List<User> authors = userRepository.findByNameIn(requestedAuthorNames);
         List<String> foundAuthorNames = authors.stream().map(User::getName).toList();
         List<String> notFoundAuthors = requestedAuthorNames.stream()
                 .filter(name -> !foundAuthorNames.contains(name))
                 .toList();
 
-        System.out.println("[4] 조회된 작가 수: " + authors.size());
             //작가가 아닌 사용자가 포함되었는지 체크
             List<User> nonAuthors = authors.stream()
                     .filter(user->user.getUserRole() != UserRole.ROLE_AUTHOR)
                     .toList();
 
         if (!notFoundAuthors.isEmpty()) {
-            System.out.println("[ERROR] 존재하지 않는 작가: " + notFoundAuthors);
             throw new BaseException(ErrorCode.USER_NOT_FOUND, "존재하지 않는 작가: " + notFoundAuthors);
         }
 
         boolean hasNonAuthor = authors.stream()
                 .anyMatch(user -> user.getUserRole() != UserRole.ROLE_AUTHOR);
         if (hasNonAuthor) {
-            System.out.println("[ERROR] 작가가 아닌 유저 포함됨");
             throw new BaseException(ErrorCode.INVALID_USER_ROLE, "작가가 아닌 유저 포함됨");
         }
 
@@ -106,18 +93,13 @@ public class WebtoonService {
         List<String> requestedCategoryNames = Optional.ofNullable(request.getCategory())
                 .orElse(Collections.emptyList());
 
-        System.out.println("[5] 요청된 카테고리: " + requestedCategoryNames);
-
         List<Category> categories = categoryRepository.findByCategoryNameIn(requestedCategoryNames);
         List<String> foundCategoryNames = categories.stream().map(Category::getCategoryName).toList();
         List<String> notFoundCategories = requestedCategoryNames.stream()
                 .filter(name -> !foundCategoryNames.contains(name))
                 .toList();
 
-        System.out.println("[6] 조회된 카테고리 수: " + categories.size());
-
         if (!notFoundCategories.isEmpty()) {
-            System.out.println("[ERROR] 존재하지 않는 카테고리: " + notFoundCategories);
             throw new BaseException(ErrorCode.CATEGORY_NOT_EXIST, "존재하지 않는 카테고리: " + notFoundCategories);
         }
 
@@ -130,23 +112,16 @@ public class WebtoonService {
                 WebtoonStatus.ONGOING
         );
         webtoonRepository.save(webtoon);
-        System.out.println("[7] 웹툰 저장 완료 - ID: " + webtoon.getId());
 
         // [5] 썸네일 업로드 후 웹툰에 반영
         String thumbnailUrl = imageService.uploadWebtoonThumbnail(webtoon.getId(), thumbnailFile);
         webtoon.updateThumbnail(thumbnailUrl); // 세터 없이 반영
-        System.out.println("[7-1] 썸네일 업로드 완료 - URL: " + thumbnailUrl);
 
         // [6] 작가 매핑
         authorService.createAuthors(webtoon, authors);
-        System.out.println("[8] 작가 매핑 저장 완료");
 
         // [7] 카테고리 매핑
         webtoonCategoryService.createWebtoonCategory(webtoon, categories);
-        System.out.println("[9] 카테고리 매핑 저장 완료");
-
-        // [8] 응답 반환
-        System.out.println("[10] 웹툰 등록 완료. 응답 반환 시작");
 
         return new WebtoonResponse(
                 webtoon.getId(),
@@ -173,8 +148,6 @@ public class WebtoonService {
         return webtoons.map(webtoon -> {
 
             Integer cachedViews = getCurrentViewCount(webtoon.getId());
-
-            System.out.println("cachedViews:"+cachedViews);
 
             List<String> authorNames = authorService.getAuthorNamesByWebtoonId(webtoon.getId());
 
@@ -215,7 +188,6 @@ public class WebtoonService {
 
             List<String> authorNames = authorService.getAuthorNamesByWebtoonId(webtoon.getId());
 
-            //List<String> genreList = Arrays.asList(webtoon.getGenres().split(","));
             List<String> categoryList = webtoonCategoryService.getCategoryNamesByWebtoonId(webtoon.getId());
             return new WebtoonResponse(
                     webtoon.getId(),
