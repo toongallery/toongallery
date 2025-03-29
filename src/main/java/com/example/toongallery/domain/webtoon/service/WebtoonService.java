@@ -74,11 +74,6 @@ public class WebtoonService {
                 .filter(name -> !foundAuthorNames.contains(name))
                 .toList();
 
-            //작가가 아닌 사용자가 포함되었는지 체크
-            List<User> nonAuthors = authors.stream()
-                    .filter(user->user.getUserRole() != UserRole.ROLE_AUTHOR)
-                    .toList();
-
         if (!notFoundAuthors.isEmpty()) {
             throw new BaseException(ErrorCode.USER_NOT_FOUND, "존재하지 않는 작가: " + notFoundAuthors);
         }
@@ -146,8 +141,6 @@ public class WebtoonService {
         Page<Webtoon> webtoons = webtoonRepository.findAll(pageable);
 
         return webtoons.map(webtoon -> {
-
-            Integer cachedViews = getCurrentViewCount(webtoon.getId());
 
             List<String> authorNames = authorService.getAuthorNamesByWebtoonId(webtoon.getId());
             
