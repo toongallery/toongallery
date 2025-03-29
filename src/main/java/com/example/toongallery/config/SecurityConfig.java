@@ -4,6 +4,7 @@ import com.example.toongallery.domain.user.enums.UserRole;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -43,10 +44,14 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(request -> request.getRequestURI().startsWith("/auth")).permitAll()
                         .requestMatchers("/test").hasAuthority(UserRole.Authority.ADMIN)
-                        //.requestMatchers("/categories/**").hasAuthority(UserRole.Authority.ADMIN)
+                        .requestMatchers(HttpMethod.GET,"/categories/**").permitAll()
+                        .requestMatchers("/categories/**").hasAuthority(UserRole.Authority.ADMIN)
                         .requestMatchers("/open").permitAll()
+                        .requestMatchers(HttpMethod.GET,"/webtoons/**").permitAll()
+                        .requestMatchers("/webtoons/**").hasAuthority(UserRole.Authority.AUTHOR)
                         .requestMatchers("/like/**").permitAll()//시큐리티 없이 like의 동작을 테스트 하기위해 임시로 작성
                         .requestMatchers("/favorite/**  ").permitAll()//시큐리티 없이 favorite의 동작을 테스트 하기위해 임시로 작성
+                        .requestMatchers("/rate/**").permitAll()//시큐리티 없이 rate의 동작을 테스트 하기위해 임시로 작성
                         .anyRequest().authenticated()
                 )
                 .build();

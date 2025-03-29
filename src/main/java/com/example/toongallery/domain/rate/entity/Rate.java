@@ -1,12 +1,16 @@
 package com.example.toongallery.domain.rate.entity;
 
 import com.example.toongallery.domain.common.entity.BaseEntity;
+import com.example.toongallery.domain.episode.entity.Episode;
+import com.example.toongallery.domain.user.entity.User;
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Getter
+@Setter
 @Entity
+@Builder
+@AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "rates")
 public class Rate extends BaseEntity {
@@ -16,7 +20,7 @@ public class Rate extends BaseEntity {
 
     private Integer rates;
 
-/*
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "episode_id")
     private Episode episode;
@@ -24,9 +28,5 @@ public class Rate extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
-*/
 
-    public Rate(Integer rates){
-        this.rates = rates;
-    }
 }
