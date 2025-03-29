@@ -150,8 +150,7 @@ public class WebtoonService {
             Integer cachedViews = getCurrentViewCount(webtoon.getId());
 
             List<String> authorNames = authorService.getAuthorNamesByWebtoonId(webtoon.getId());
-
-            //List<String> genreList = Arrays.asList(webtoon.getGenres().split(","));
+            
             List<String> categoryList = webtoonCategoryService.getCategoryNamesByWebtoonId(webtoon.getId());
 
             return new WebtoonResponse(
@@ -187,7 +186,6 @@ public class WebtoonService {
         return webtoons.map(webtoon->{
 
             List<String> authorNames = authorService.getAuthorNamesByWebtoonId(webtoon.getId());
-
             List<String> categoryList = webtoonCategoryService.getCategoryNamesByWebtoonId(webtoon.getId());
             return new WebtoonResponse(
                     webtoon.getId(),
