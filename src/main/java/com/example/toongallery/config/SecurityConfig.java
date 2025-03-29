@@ -48,7 +48,7 @@ public class SecurityConfig {
                         .requestMatchers("/categories/**").hasAuthority(UserRole.Authority.ADMIN)
                         .requestMatchers("/open").permitAll()
                         .requestMatchers(HttpMethod.GET,"/webtoons/**").permitAll()
-                        .requestMatchers("/webtoons/**").hasAuthority(UserRole.Authority.AUTHOR)
+//                        .requestMatchers("/webtoons/**").hasAuthority(UserRole.Authority.AUTHOR) // 댓글 생성을 위해 잠깐 주석 처리
                         .requestMatchers("/like/**").permitAll()//시큐리티 없이 like의 동작을 테스트 하기위해 임시로 작성
                         .requestMatchers("/favorite/**  ").permitAll()//시큐리티 없이 favorite의 동작을 테스트 하기위해 임시로 작성
                         .requestMatchers("/rate/**").permitAll()//시큐리티 없이 rate의 동작을 테스트 하기위해 임시로 작성

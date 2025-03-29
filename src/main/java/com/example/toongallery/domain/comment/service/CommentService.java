@@ -46,7 +46,7 @@ public class CommentService {
     @Transactional(readOnly = true)
     public List<CommentResponse> getBestComments(Long episodeId) {
         // 좋아요 수에 따른 상위 10개의 댓글만 출력
-        return null;
+        return commentRepository.findTop10CommentById(episodeId);
     }
 
     @Transactional(readOnly = true)

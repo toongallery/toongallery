@@ -5,12 +5,14 @@ import com.example.toongallery.domain.episode.entity.Episode;
 import com.example.toongallery.domain.user.entity.User;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor
 @Table(name = "comments")
 public class Comment extends BaseEntity {
     @Id
