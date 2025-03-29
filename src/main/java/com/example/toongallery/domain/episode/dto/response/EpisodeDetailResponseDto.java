@@ -1,5 +1,6 @@
 package com.example.toongallery.domain.episode.dto.response;
 
+import com.example.toongallery.domain.comment.dto.response.CommentResponse;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -14,4 +15,5 @@ public class EpisodeDetailResponseDto {
     private String title;
     private Integer episodeNumber;
     private List<String> imageUrls;
+    private List<CommentResponse> topTenComments;
 }

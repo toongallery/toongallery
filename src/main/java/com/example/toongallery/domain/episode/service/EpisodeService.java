@@ -1,5 +1,7 @@
 package com.example.toongallery.domain.episode.service;
 
+import com.example.toongallery.domain.comment.dto.response.CommentResponse;
+import com.example.toongallery.domain.comment.repository.CommentRepository;
 import com.example.toongallery.domain.common.exception.BaseException;
 import com.example.toongallery.domain.common.exception.ErrorCode;
 import com.example.toongallery.domain.episode.dto.request.EpisodeSaveRequest;
@@ -29,6 +31,8 @@ public class EpisodeService {
     private final ImageRepository imageRepository;
     private final WebtoonRepository webtoonRepository;
     private final ImageService imageService;
+
+    private final CommentRepository commentRepository;
 
     @Transactional
     public EpisodeSaveResponse saveEpisode(
@@ -104,11 +108,16 @@ public class EpisodeService {
                 .map(Image::getImageUrl)
                 .toList();
 
+        // 상위 10개의 베스트 댓글 출력
+        List<CommentResponse> commentResponseList = commentRepository.findTop10CommentById(episodeId);
+
+
         return new EpisodeDetailResponseDto(
                 episode.getId(),
                 episode.getTitle(),
                 episode.getEpisodeNumber(),
-                imageUrls
+                imageUrls,
+                commentResponseList
         );
     }
 
