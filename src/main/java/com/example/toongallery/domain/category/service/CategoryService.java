@@ -32,7 +32,7 @@ public class CategoryService {
         Category category = getCategoryEntity(categoryId);
 
         if (request.getCategoryName() != null && !request.getCategoryName().isBlank()
-                && !category.getCategoryName().equals(request.getCategoryName())) {
+                && !category.getCategoryName().equals(request.getCategoryName().toUpperCase())) {
 
             isDuplicatedName(request.getCategoryName());
             category.updateCategoryName(request.getCategoryName().toUpperCase());
@@ -65,7 +65,7 @@ public class CategoryService {
     }
 
     private void isDuplicatedName(String categoryName) {
-        if (categoryRepository.existsByCategoryName(categoryName)) {
+        if (categoryRepository.existsByCategoryName(categoryName.toUpperCase())) {
             throw new BaseException(ErrorCode.DUPLICATE_CATEGORY_NAME, categoryName);
         }
     }

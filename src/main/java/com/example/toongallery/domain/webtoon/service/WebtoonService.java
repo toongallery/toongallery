@@ -17,8 +17,8 @@ import com.example.toongallery.domain.webtoon.entity.Webtoon;
 import com.example.toongallery.domain.webtoon.entity.WebtoonViewLog;
 import com.example.toongallery.domain.webtoon.enums.WebtoonStatus;
 import com.example.toongallery.domain.webtoon.repository.WebtoonRepository;
-import com.example.toongallery.domain.webtooncategory.service.WebtoonCategoryService;
 import com.example.toongallery.domain.webtoon.repository.WebtoonViewLogRepository;
+import com.example.toongallery.domain.webtooncategory.service.WebtoonCategoryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
@@ -33,10 +33,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.Collections;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -146,8 +144,6 @@ public class WebtoonService {
         Page<Webtoon> webtoons = webtoonRepository.findAll(pageable);
 
         return webtoons.map(webtoon -> {
-
-            Integer cachedViews = getCurrentViewCount(webtoon.getId());
 
             List<String> authorNames = authorService.getAuthorNamesByWebtoonId(webtoon.getId());
             
