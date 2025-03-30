@@ -274,16 +274,16 @@ public class WebtoonServiceTest {
 
         when(userRepository.findByNameIn(List.of("작가1", "작가2")))
                 .thenReturn(List.of(authorUser, coAuthorUser));
-
+      
         //카테고리 Mock 설정
         Category romance = Category.of("로맨스");
         Category comedy = Category.of("코미디");
         when(categoryRepository.findByCategoryNameIn(List.of("로맨스", "코미디")))
                 .thenReturn(List.of(romance, comedy));
-
+      
         when(imageService.uploadWebtoonThumbnail(anyLong(), any()))
                 .thenReturn("https://example.com/thumbnail.jpg");
-
+      
         // 5. Mock 웹툰 저장 설정
         when(webtoonRepository.save(any(Webtoon.class)))
                 .thenAnswer(invocation -> {
@@ -291,10 +291,10 @@ public class WebtoonServiceTest {
                     webtoon.setId(1L); // 저장 후 ID 설정
                     return webtoon;
                 });
-
+      
         //테스트 실행
         WebtoonResponse response = webtoonService.saveWebtoon(authUser, request, thumbnailFile);
-
+      
         //검증
         assertNotNull(response);
         assertEquals("테스트 웹툰", response.getTitle());
@@ -303,7 +303,7 @@ public class WebtoonServiceTest {
         assertEquals("https://example.com/thumbnail.jpg", response.getThumbnail());
         assertEquals("테스트 설명", response.getDescription());
         assertEquals(DayOfWeek.MON, response.getDayOfWeek());
-
+      
         //상호작용 검증
         verify(webtoonRepository).save(any(Webtoon.class));
         verify(authorService).createAuthors(any(Webtoon.class), eq(List.of(authorUser, coAuthorUser)));
@@ -313,7 +313,7 @@ public class WebtoonServiceTest {
         );
         verify(imageService).uploadWebtoonThumbnail(eq(1L), eq(thumbnailFile));
     }
-
+  
     @DisplayName("웹툰 저장 실패 - 로그인한 유저가 작가가 아님")
     @Test
     void saveWebtoon_실패_작성자가아님() {
@@ -327,20 +327,20 @@ public class WebtoonServiceTest {
                 DayOfWeek.MON
         );
         MultipartFile thumbnailFile = mock(MultipartFile.class);
-
+      
         User user = new User(
                 "user@example.com", "pw", "유저", LocalDate.now(), Gender.MALE, UserRole.ROLE_USER
         );
         when(userRepository.findByEmail("user@example.com")).thenReturn(Optional.of(user));
-
+      
         // when & then
         BaseException ex = assertThrows(BaseException.class, () ->
                 webtoonService.saveWebtoon(authUser, request, thumbnailFile));
-
+      
         assertEquals(ErrorCode.INVALID_USER_ROLE, ex.getErrorCode());
         assertEquals("작가만 웹툰 등록 가능", ex.getField());
     }
-
+  
     @DisplayName("웹툰 저장 실패 - 작가 목록에 존재하지 않는 유저 포함")
     @Test
     void saveWebtoon_실패_존재하지않는작가() {
@@ -354,70 +354,70 @@ public class WebtoonServiceTest {
                 DayOfWeek.MON
         );
         MultipartFile thumbnailFile = mock(MultipartFile.class);
-
+      
         User authorUser = new User(
                 "author@example.com", "pw", "작가1", LocalDate.now(), Gender.MALE, UserRole.ROLE_AUTHOR
         );
-
+      
         when(userRepository.findByEmail("author@example.com")).thenReturn(Optional.of(authorUser));
         when(userRepository.findByNameIn(List.of("작가1", "작가2")))
                 .thenReturn(List.of(authorUser)); // 작가2 없음
-
+      
         // when & then
         BaseException ex = assertThrows(BaseException.class, () ->
                 webtoonService.saveWebtoon(authUser, request, thumbnailFile));
-
+      
         assertEquals(ErrorCode.USER_NOT_FOUND, ex.getErrorCode());
         assertTrue(ex.getField().contains("작가2"), "2111"); // 누락된 작가 이름 포함 여부
     }
-
-
+  
+  
     @Test
     @DisplayName("전체 웹툰 조회 - 작가, 카테고리 포함")
     void getWebtoons_성공() {
         // given
         Webtoon webtoon1 = Webtoon.of("웹툰1", "thumb1.jpg", "설명1", DayOfWeek.MON, WebtoonStatus.ONGOING);
         ReflectionTestUtils.setField(webtoon1, "id", 1L);
-
+      
         Webtoon webtoon2 = Webtoon.of("웹툰2", "thumb2.jpg", "설명2", DayOfWeek.TUE, WebtoonStatus.ONGOING);
         ReflectionTestUtils.setField(webtoon2, "id", 2L);
-
+      
         Page<Webtoon> mockPage = new PageImpl<>(List.of(webtoon1, webtoon2));
         when(webtoonRepository.findAll(any(Pageable.class))).thenReturn(mockPage);
-
+      
         when(authorService.getAuthorNamesByWebtoonId(1L)).thenReturn(List.of("작가A"));
         when(authorService.getAuthorNamesByWebtoonId(2L)).thenReturn(List.of("작가B", "작가C"));
-
+      
         when(webtoonCategoryService.getCategoryNamesByWebtoonId(1L)).thenReturn(List.of("로맨스"));
         when(webtoonCategoryService.getCategoryNamesByWebtoonId(2L)).thenReturn(List.of("액션", "판타지"));
-
+      
         // when
         Page<WebtoonResponse> result = webtoonService.getWebtoons(1, 10);
-
+      
         // then
         assertEquals(2, result.getContent().size());
-
+      
         WebtoonResponse w1 = result.getContent().get(0);
         assertEquals("웹툰1", w1.getTitle());
         assertEquals(List.of("작가A"), w1.getAuthors());
         assertEquals(List.of("로맨스"), w1.getGenres());
-
+      
         WebtoonResponse w2 = result.getContent().get(1);
         assertEquals("웹툰2", w2.getTitle());
         assertEquals(List.of("작가B", "작가C"), w2.getAuthors());
         assertEquals(List.of("액션", "판타지"), w2.getGenres());
     }
-
+  
     @DisplayName("전체 웹툰 조회 - 결과 없음 (빈 페이지)")
     @Test
     void getWebtoons_빈결과() {
         // given
         Page<Webtoon> emptyPage = new PageImpl<>(List.of());
         when(webtoonRepository.findAll(any(Pageable.class))).thenReturn(emptyPage);
-
+      
         // when
         Page<WebtoonResponse> result = webtoonService.getWebtoons(1, 10);
-
+      
         // then
         assertNotNull(result);
         assertEquals(0, result.getContent().size());
