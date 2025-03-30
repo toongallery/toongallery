@@ -1,0 +1,89 @@
+name: Java CI with Gradle and Docker
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      - name: Grant execute permission to Gradle Wrapper
+        run: chmod +x gradlew  # 실행 권한 부여
+
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@af1da67850ed9a4cedd57bfd976089dd991e2582 # v4.0.0
+
+      - name: Build with Gradle Wrapper
+        run: ./gradlew build
+
+  docker:
+    needs: build  # Gradle 빌드가 끝난 후 실행
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build and Push Docker Image
+        uses: docker/build-push-action@v6.15.0
+        with:
+          context: .
+          push: true
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/myapp:latest
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: Show Build Summary
+        run: echo "✅ Docker 이미지 빌드 및 푸시 완료!"
+
+  deploy:
+    needs: docker  # Docker 이미지 빌드 후 실행
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Deploy to EC2
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USER }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          port: 22
+          script: |
+            echo "🔑 SSH 인증 성공!"
+            echo ${{ secrets.EC2_HOST }}
+            echo ${{ secrets.EC2_USER }}
+            echo "SSH Key Length: $(echo -n "${{ secrets.EC2_SSH_KEY }}" | wc -c)"
+            docker stop myapp || true
+            docker rm myapp || true
+            docker pull ${{ secrets.DOCKERHUB_USERNAME }}/myapp:latest
+            docker run -d --name myapp --env-file env -p 8080:8080 ${{ secrets.DOCKERHUB_USERNAME }}/myapp:latest

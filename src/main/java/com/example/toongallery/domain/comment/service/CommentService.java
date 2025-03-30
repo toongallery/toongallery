@@ -45,12 +45,6 @@ public class CommentService {
     }
 
     @Transactional(readOnly = true)
-    public List<CommentResponse> getBestComments(Long episodeId) {
-        // 좋아요 수에 따른 상위 10개의 댓글만 출력
-        return null;
-    }
-
-    @Transactional(readOnly = true)
     public List<CommentResponse> getComments(Long episodeId, Pageable pageable) {
         Page<Comment> comments = commentRepository.findByEpisodeIdAndParentIsNullOrderByCreatedAt(episodeId, pageable);
         return comments.stream()
