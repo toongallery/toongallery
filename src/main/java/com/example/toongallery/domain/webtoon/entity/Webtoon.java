@@ -6,9 +6,11 @@ import com.example.toongallery.domain.webtoon.enums.WebtoonStatus;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.hibernate.annotations.ColumnDefault;
 
 @Getter
+@Setter
 @Entity
 @NoArgsConstructor
 @Table(name = "webtoons")
