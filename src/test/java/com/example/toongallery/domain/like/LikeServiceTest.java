@@ -3,6 +3,7 @@ package com.example.toongallery.domain.like;
 import com.example.toongallery.domain.comment.entity.Comment;
 import com.example.toongallery.domain.common.exception.BaseException;
 import com.example.toongallery.domain.common.exception.ErrorCode;
+import com.example.toongallery.domain.episode.entity.Episode;
 import com.example.toongallery.domain.like.entity.Like;
 import com.example.toongallery.domain.like.repository.LikeRepository;
 import com.example.toongallery.domain.like.service.LikeService;
@@ -18,6 +19,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.dao.OptimisticLockingFailureException;
+import org.springframework.test.util.ReflectionTestUtils;
 
 import java.time.LocalDate;
 import java.util.Optional;
@@ -46,6 +48,7 @@ class LikeServiceTest {
     private User user1;
     private User user2;
     private Comment comment;
+    private Episode episode;
 
     @BeforeEach
     public void setUp() {
@@ -68,9 +71,8 @@ class LikeServiceTest {
         );
         user2.setId(2L);
 
-        comment = new Comment();
-        comment.setId(1L);
-        comment.setContent("Test Comment");
+        comment = Comment.of(episode, user1, "Child Comment", null);
+        ReflectionTestUtils.setField(comment, "Id", 2L); // ID 강제 설정
     }
 
     @Test

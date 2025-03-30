@@ -40,7 +40,12 @@ public class Comment extends BaseEntity {
         this.parent = parent;
     }
 
+    public static Comment of(Episode episode, User user, String content, Comment parent) {
+        return new Comment(episode, user, content, parent);
+    }
+
     public void updateContent(String content) {
         this.content = content;
     }
+
 }
