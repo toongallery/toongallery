@@ -13,6 +13,7 @@ import org.springframework.dao.OptimisticLockingFailureException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Random;
 
 @Service
@@ -27,8 +28,6 @@ public class LikeService {
     private static final int MAX_RETRIES = 3; // 최대 재시도 횟수
     private static final Random random = new Random(); // 랜덤 객체 생성
 
-    private static final long RETRY_DELAY_MS = 100; // 재시도 간 대기 시간 (밀리초)
-
     @Transactional
     public boolean toggle(Long userId, Long commentId) {
         int attempt = 0;
@@ -37,6 +36,12 @@ public class LikeService {
             try {
                 if (likeRepository.existsByUserIdAndCommentId(userId, commentId)) {
                     likeRepository.deleteByUserIdAndCommentId(userId, commentId);
+
+                    Comment comment = commentRepository.findById(commentId)
+                            .orElseThrow(() -> new BaseException(ErrorCode.COMMENT_NOT_EXIST, null));
+                    comment.decreaseLikeCount();
+
+                    commentRepository.save(comment);
                     return false; // 좋아요가 true(이미 좋아요인 상태)이면 false(좋아요 취소)로 변경
                 }
 
@@ -51,6 +56,10 @@ public class LikeService {
                         .build();
 
                 likeRepository.save(like);
+
+                comment.increaseLikeCount();
+                commentRepository.save(comment);
+
                 return true;
             } catch (OptimisticLockingFailureException e) {
                 attempt++;
@@ -71,5 +80,11 @@ public class LikeService {
 
     public int getLikeCount(Long commentId) {
         return likeRepository.countByCommentId(commentId);
+    }
+
+    @Transactional
+    public void removeLikesForComment(Long commentId) {
+        List<Like> likes = likeRepository.findByCommentId(commentId);
+        likeRepository.deleteAll(likes);
     }
 }

@@ -36,6 +36,11 @@ public class FavoriteService {
                 // 이미 좋아요 상태라면 취소 처리
                 if (favoriteRepository.existsByUserIdAndWebtoonId(userId, webtoonId)) {
                     favoriteRepository.deleteByUserIdAndWebtoonId(userId, webtoonId);
+                    Webtoon webtoon = webtoonRepository.findById(webtoonId)
+                            .orElseThrow(() -> new BaseException(ErrorCode.COMMENT_NOT_EXIST, null));
+                    webtoon.decreaseLikeCount();
+
+                    webtoonRepository.save(webtoon);
                     return false;
                 }
 
@@ -51,7 +56,11 @@ public class FavoriteService {
                         .user(user)
                         .build();
 
+
                 favoriteRepository.save(favorite);
+
+                webtoon.increaseLikeCount();
+                webtoonRepository.save(webtoon);
                 return true;
 
             } catch (OptimisticLockingFailureException e) {

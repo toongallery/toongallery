@@ -18,3 +18,6 @@ desc users;
 #
 # INSERT INTO comments (id, content, created_at, modified_at, episode_id, user_id, parent_id)
 # VALUES (1, '테스트 댓글입니다.', NOW(), NOW(), 1, 1, NULL);
+
+# INSERT INTO episodes (id, title, episode_number, thumbnail_url, created_At, modifed_At)
+# VALUES (1, '테스트용 에피소드제목', '1','testURL',NOW(),NOW());

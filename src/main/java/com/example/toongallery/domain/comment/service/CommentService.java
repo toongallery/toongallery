@@ -10,6 +10,7 @@ import com.example.toongallery.domain.common.exception.BaseException;
 import com.example.toongallery.domain.common.exception.ErrorCode;
 import com.example.toongallery.domain.episode.entity.Episode;
 import com.example.toongallery.domain.episode.service.EpisodeService;
+import com.example.toongallery.domain.like.service.LikeService;
 import com.example.toongallery.domain.user.entity.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -25,6 +26,7 @@ import java.util.stream.Collectors;
 public class CommentService {
     private final CommentRepository commentRepository;
     private final EpisodeService episodeService;
+    private final LikeService likeService;
 
     @Transactional
     public CommentResponse createComment(AuthUser authUser, Long episodeId, CommentSaveRequest request) {
@@ -83,6 +85,7 @@ public class CommentService {
         if (!user.getId().equals(authUser.getUserId())) {
             throw new BaseException(ErrorCode.COMMENT_NOT_MATCH_USER, null);
         }
+        likeService.removeLikesForComment(commentId);
         commentRepository.deleteByParentId(comment.getId());
         commentRepository.delete(comment);
     }

@@ -61,6 +61,18 @@ public class Webtoon extends BaseEntity {
         return webtoon;
     }
 
+    // 좋아요 수 증가 메서드
+    public void increaseLikeCount() {
+        this.favorite_count++;
+    }
+
+    // 좋아요 수 감소 메서드
+    public void decreaseLikeCount() {
+        if (this.favorite_count > 0) {
+            this.favorite_count--;
+        }
+    }
+
     public void updateThumbnail(String thumbnailUrl) {
         this.thumbnail = thumbnailUrl;
     }

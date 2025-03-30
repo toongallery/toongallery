@@ -284,7 +284,6 @@ public class WebtoonService {
     public Webtoon getWebtoonWithAverageRate(Long webtoonId) {
         Webtoon webtoon = webtoonRepository.findById(webtoonId)
                 .orElseThrow(() -> new BaseException(ErrorCode.WEBTOON_NOT_FOUND, null));
-
         // 평균 평점 설정
         Double averageRate = rateService.getAverageRateByWebtoonId(webtoonId);
         webtoon.setRate(averageRate);
