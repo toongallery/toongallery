@@ -9,7 +9,7 @@ import lombok.Getter;
 import java.time.LocalDate;
 
 @Getter
-public class UserResponse{
+public class UserResponse {
     private final Long id;
     private final String email;
     private final String name;

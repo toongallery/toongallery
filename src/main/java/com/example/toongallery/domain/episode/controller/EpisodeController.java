@@ -27,13 +27,14 @@ public class EpisodeController {
     public ResponseEntity<EpisodeSaveResponse> createEpisode(
             @PathVariable Long webtoonId,
             @RequestPart(value = "json") EpisodeSaveRequest dto,
-            @RequestPart(value ="thumbnail") MultipartFile thumbnailFile,
-            @RequestPart(value ="images") List<MultipartFile> imageFiles
+            @RequestPart(value = "thumbnail") MultipartFile thumbnailFile,
+            @RequestPart(value = "images") List<MultipartFile> imageFiles
 
     ) {
         EpisodeSaveResponse response = episodeService.saveEpisode(webtoonId, dto, thumbnailFile, imageFiles);
         return ResponseEntity.ok(response);
     }
+
     @GetMapping("/webtoons/{webtoonId}/episodes")
     public ResponseEntity<List<EpisodeResponseDto>> getEpisodes(@PathVariable Long webtoonId) {
         List<EpisodeResponseDto> episodes = episodeService.getEpisodesByWebtoonId(webtoonId);

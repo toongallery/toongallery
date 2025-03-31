@@ -8,6 +8,7 @@ import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.hibernate.annotations.SQLRestriction;
 
 import java.time.LocalDate;
@@ -15,7 +16,8 @@ import java.time.LocalDateTime;
 
 @Entity
 @Getter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Setter
+@NoArgsConstructor//(access = AccessLevel.PROTECTED)
 @SQLRestriction("deleted_at is null")
 @Table(name = "users")
 public class User extends BaseEntity {
@@ -55,6 +57,7 @@ public class User extends BaseEntity {
         this.email = email;
         this.userRole = userRole;
     }
+
     public static User fromAuthUser(AuthUser authUser) {
         return new User(authUser.getUserId(), authUser.getEmail(), authUser.getUserRole());
     }

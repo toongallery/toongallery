@@ -15,7 +15,8 @@ import lombok.*;
 @Table(name = "Likes")
 public class Like extends BaseEntity {
 
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -26,5 +27,7 @@ public class Like extends BaseEntity {
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
+    @Version
+    private Long version;
 }
 

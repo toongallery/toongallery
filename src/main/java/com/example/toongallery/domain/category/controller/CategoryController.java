@@ -20,7 +20,7 @@ public class CategoryController {
     @PostMapping
     public ResponseEntity<CategoryResponse> createCategory(
             @Valid @RequestBody CategoryRequest request
-    ){
+    ) {
         CategoryResponse category = categoryService.createCategory(request);
         return new ResponseEntity<>(category, HttpStatus.OK);
     }
@@ -51,6 +51,6 @@ public class CategoryController {
     @GetMapping
     public ResponseEntity<List<CategoryResponse>> getAllCategories() {
         List<CategoryResponse> categories = categoryService.getAllCategories();
-        return new ResponseEntity<>(categories ,HttpStatus.OK);
+        return new ResponseEntity<>(categories, HttpStatus.OK);
     }
 }

@@ -47,12 +47,12 @@ public class CategoryService {
     }
 
     @Transactional(readOnly = true)
-    public CategoryResponse getCategory(Long categoryId){
+    public CategoryResponse getCategory(Long categoryId) {
         return CategoryResponse.from(getCategoryEntity(categoryId));
     }
 
     @Transactional(readOnly = true)
-    public List<CategoryResponse> getAllCategories(){
+    public List<CategoryResponse> getAllCategories() {
         List<Category> categories = categoryRepository.findAll();
         return categories.stream()
                 .map(CategoryResponse::from)

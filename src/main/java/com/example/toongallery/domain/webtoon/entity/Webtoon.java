@@ -16,7 +16,8 @@ import org.hibernate.annotations.ColumnDefault;
 @Table(name = "webtoons")
 public class Webtoon extends BaseEntity {
 
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(nullable = false)
@@ -58,6 +59,18 @@ public class Webtoon extends BaseEntity {
         webtoon.day_of_week = day_of_week;
         webtoon.status = status;
         return webtoon;
+    }
+
+    // 좋아요 수 증가 메서드
+    public void increaseLikeCount() {
+        this.favorite_count++;
+    }
+
+    // 좋아요 수 감소 메서드
+    public void decreaseLikeCount() {
+        if (this.favorite_count > 0) {
+            this.favorite_count--;
+        }
     }
 
     public void updateThumbnail(String thumbnailUrl) {

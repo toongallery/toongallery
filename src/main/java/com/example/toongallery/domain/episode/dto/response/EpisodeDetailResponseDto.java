@@ -16,4 +16,6 @@ public class EpisodeDetailResponseDto {
     private Integer episodeNumber;
     private List<String> imageUrls;
     private List<CommentResponse> topTenComments;
+
+
 }

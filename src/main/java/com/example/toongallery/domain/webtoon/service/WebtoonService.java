@@ -7,6 +7,7 @@ import com.example.toongallery.domain.common.dto.AuthUser;
 import com.example.toongallery.domain.common.exception.BaseException;
 import com.example.toongallery.domain.common.exception.ErrorCode;
 import com.example.toongallery.domain.image.service.ImageService;
+import com.example.toongallery.domain.rate.service.RateService;
 import com.example.toongallery.domain.user.entity.User;
 import com.example.toongallery.domain.user.enums.UserRole;
 import com.example.toongallery.domain.user.repository.UserRepository;
@@ -52,6 +53,7 @@ public class WebtoonService {
     private final ImageService imageService;
     private final CacheManager cacheManager;
     private final WebtoonViewLogRepository webtoonViewLogRepository;
+    private final RateService rateService;
 
     @Transactional
     public WebtoonResponse saveWebtoon(AuthUser authUser, WebtoonSaveRequest request, MultipartFile thumbnailFile) {
@@ -277,6 +279,15 @@ public class WebtoonService {
                 .collect(Collectors.toList());
     }
 
-    // 웹툰 제목 변경
-    // 웹툰 작가
+    //평점 조회
+    @Transactional(readOnly = true)
+    public Webtoon getWebtoonWithAverageRate(Long webtoonId) {
+        Webtoon webtoon = webtoonRepository.findById(webtoonId)
+                .orElseThrow(() -> new BaseException(ErrorCode.WEBTOON_NOT_FOUND, null));
+        // 평균 평점 설정
+        Double averageRate = rateService.getAverageRateByWebtoonId(webtoonId);
+        webtoon.setRate(averageRate);
+
+        return webtoon;
+    }
 }

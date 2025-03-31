@@ -38,13 +38,16 @@ public enum ErrorCode {
     //관심 관련 에러 코드
 
     //평점 관련 에러 코드
+    EPISODE_NOT_EXIST("에피소드가 존재하지 않습니다.", HttpStatus.BAD_REQUEST),
+    RATE_NOT_EXIST("평점이 존재하지 않습니다.", HttpStatus.BAD_REQUEST),
+
     //이미지 관련 에러코드
 
     //그 외 에러 코드
     UNSUPPORTED_FILE_TYPE("지원하지 않는 파일 타입입니다.", HttpStatus.BAD_REQUEST),
     INVALID_TYPE("유효하지 않은 타입입니다.",HttpStatus.BAD_REQUEST),
-    SERVER_NOT_WORK("서버 문제로 인해 실패했습니다.", HttpStatus.INTERNAL_SERVER_ERROR);
-
+    SERVER_NOT_WORK("서버 문제로 인해 실패했습니다.", HttpStatus.INTERNAL_SERVER_ERROR),
+    CONCURRENCY_CONFLICT("동시 수정이 시도되었습니다.", HttpStatus.BAD_REQUEST);
     private final String message;
     private final HttpStatus httpStatus;
 }

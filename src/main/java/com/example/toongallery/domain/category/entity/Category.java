@@ -18,7 +18,7 @@ public class Category extends BaseEntity {
     @Column(length = 10, nullable = false, unique = true)
     private String categoryName;
 
-    public static Category of(String categoryName){
+    public static Category of(String categoryName) {
         Category category = new Category();
         category.categoryName = categoryName;
         return category;
