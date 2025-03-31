@@ -10,6 +10,9 @@ import com.example.toongallery.domain.rate.service.RateService;
 import com.example.toongallery.domain.user.entity.User;
 import com.example.toongallery.domain.user.repository.UserRepository;
 import com.example.toongallery.domain.webtoon.entity.Webtoon;
+import com.example.toongallery.domain.webtoon.enums.DayOfWeek;
+import com.example.toongallery.domain.webtoon.enums.WebtoonStatus;
+import com.example.toongallery.domain.webtoon.repository.WebtoonRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -17,6 +20,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.dao.OptimisticLockingFailureException;
+import org.springframework.test.util.ReflectionTestUtils;
 
 import java.util.Optional;
 
@@ -40,6 +44,9 @@ class RateServiceTest {
     @Mock
     private EpisodeRepository episodeRepository;
 
+    @Mock
+    private WebtoonRepository webtoonRepository;
+
     private User user1;
     private User user2;
     private Episode episode;
@@ -53,9 +60,6 @@ class RateServiceTest {
         user2 = new User("user2@example.com", "password", "User Two", null, null, null);
         user2.setId(2L);
 
-        webtoon = new Webtoon();
-        webtoon.setId(1L);
-
         episode = Episode.of("Episode 1", 1, "thumbnail_url", webtoon);
         episode.setId(1L);
     }
@@ -63,6 +67,14 @@ class RateServiceTest {
     @Test
     void rating이_없으면_새로_저장() {
         // Given
+
+        Webtoon webtoon = Webtoon.of("웹툰 제목", "썸네일 URL", "웹툰 설명", DayOfWeek.TUE, WebtoonStatus.ONGOING);
+        ReflectionTestUtils.setField(webtoon, "id", 1L); // ID 강제 설정
+
+        ReflectionTestUtils.setField(episode, "webtoon", webtoon);
+
+        given(webtoonRepository.findById(webtoon.getId()))
+                .willReturn(Optional.of(webtoon));
 
         given(rateRepository.findByUserIdAndEpisodeId(user1.getId(), episode.getId()))
                 .willReturn(Optional.empty());
@@ -93,6 +105,13 @@ class RateServiceTest {
         existingRate.setUser(user1);
         existingRate.setEpisode(episode);
 
+        Webtoon webtoon = Webtoon.of("웹툰 제목", "썸네일 URL", "웹툰 설명", DayOfWeek.TUE, WebtoonStatus.ONGOING);
+        ReflectionTestUtils.setField(webtoon, "id", 1L); // ID 강제 설정
+
+        ReflectionTestUtils.setField(episode, "webtoon", webtoon);
+
+        given(webtoonRepository.findById(webtoon.getId()))
+                .willReturn(Optional.of(webtoon));
         given(rateRepository.findByUserIdAndEpisodeId(user1.getId(), episode.getId()))
                 .willReturn(Optional.of(existingRate));
         given(episodeRepository.findById(episode.getId()))
