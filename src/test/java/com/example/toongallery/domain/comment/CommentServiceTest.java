@@ -11,6 +11,7 @@ import com.example.toongallery.domain.common.exception.BaseException;
 import com.example.toongallery.domain.common.exception.ErrorCode;
 import com.example.toongallery.domain.episode.entity.Episode;
 import com.example.toongallery.domain.episode.service.EpisodeService;
+import com.example.toongallery.domain.like.service.LikeService;
 import com.example.toongallery.domain.user.entity.User;
 import com.example.toongallery.domain.user.enums.Gender;
 import com.example.toongallery.domain.user.enums.UserRole;
@@ -44,6 +45,9 @@ class CommentServiceTest {
 
     @Mock
     private EpisodeService episodeService;
+
+    @Mock
+    private LikeService likeService;
 
     private User user;
     private AuthUser authUser;
