@@ -35,3 +35,10 @@ out/
 
 ### VS Code ###
 .vscode/
+
+### properties ###
+*.properties
+
+
+### docker ###
+docker-compose.yml
