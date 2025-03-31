@@ -106,15 +106,15 @@ public class WebtoonService {
         );
         webtoonRepository.save(webtoon);
 
-        // [5] 썸네일 업로드 후 웹툰에 반영
-        String thumbnailUrl = imageService.uploadWebtoonThumbnail(webtoon.getId(), thumbnailFile);
-        webtoon.updateThumbnail(thumbnailUrl); // 세터 없이 반영
-
-        // [6] 작가 매핑
+        // [5] 작가 매핑
         authorService.createAuthors(webtoon, authors);
 
-        // [7] 카테고리 매핑
+        // [6] 카테고리 매핑
         webtoonCategoryService.createWebtoonCategory(webtoon, categories);
+
+        // [7] 썸네일 업로드 후 웹툰에 반영
+        String thumbnailUrl = imageService.uploadWebtoonThumbnail(webtoon.getId(), thumbnailFile);
+        webtoon.updateThumbnail(thumbnailUrl);
 
         return new WebtoonResponse(
                 webtoon.getId(),
