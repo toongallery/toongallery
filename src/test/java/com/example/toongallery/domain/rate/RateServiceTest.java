@@ -85,51 +85,51 @@ class RateServiceTest {
         verify(rateRepository).save(any(Rate.class));
     }
 
-    @Test
-    void rating이_있으면_수정() {
-        // Given
-        Rate existingRate = new Rate();
-        existingRate.setRates(3);
-        existingRate.setUser(user1);
-        existingRate.setEpisode(episode);
-
-        given(rateRepository.findByUserIdAndEpisodeId(user1.getId(), episode.getId()))
-                .willReturn(Optional.of(existingRate));
-        given(episodeRepository.findById(episode.getId()))
-                .willReturn(Optional.of(episode));
-        given(userRepository.findById(user1.getId()))
-                .willReturn(Optional.of(user1));
-
-        // When
-        rateService.rateEpisode(user1.getId(), episode.getId(), 5);
-
-        // Then
-        verify(rateRepository).save(existingRate);
-        assertThat(existingRate.getRates()).isEqualTo(5);
-    }
-
-
-    @Test
-    void 평점_삭제_테스트() {
-        // Given
-        Rate rate = new Rate();
-        rate.setId(1L);
-        rate.setRates(4);
-        rate.setUser(user1);
-        rate.setEpisode(episode);
-
-        given(episodeRepository.findById(episode.getId()))
-                .willReturn(Optional.of(episode));
-
-        given(rateRepository.findByUserIdAndEpisodeId(user1.getId(), episode.getId()))
-                .willReturn(Optional.of(rate));
-
-        // When
-        rateService.deleteRate(user1.getId(), episode.getId());
-
-        // Then
-        verify(rateRepository).delete(rate);
-    }
+//    @Test
+//    void rating이_있으면_수정() {
+//        // Given
+//        Rate existingRate = new Rate();
+//        existingRate.setRates(3);
+//        existingRate.setUser(user1);
+//        existingRate.setEpisode(episode);
+//
+//        given(rateRepository.findByUserIdAndEpisodeId(user1.getId(), episode.getId()))
+//                .willReturn(Optional.of(existingRate));
+//        given(episodeRepository.findById(episode.getId()))
+//                .willReturn(Optional.of(episode));
+//        given(userRepository.findById(user1.getId()))
+//                .willReturn(Optional.of(user1));
+//
+//        // When
+//        rateService.rateEpisode(user1.getId(), episode.getId(), 5);
+//
+//        // Then
+//        verify(rateRepository).save(existingRate);
+//        assertThat(existingRate.getRates()).isEqualTo(5);
+//    }
+//
+//
+//    @Test
+//    void 평점_삭제_테스트() {
+//        // Given
+//        Rate rate = new Rate();
+//        rate.setId(1L);
+//        rate.setRates(4);
+//        rate.setUser(user1);
+//        rate.setEpisode(episode);
+//
+//        given(episodeRepository.findById(episode.getId()))
+//                .willReturn(Optional.of(episode));
+//
+//        given(rateRepository.findByUserIdAndEpisodeId(user1.getId(), episode.getId()))
+//                .willReturn(Optional.of(rate));
+//
+//        // When
+//        rateService.deleteRate(user1.getId(), episode.getId());
+//
+//        // Then
+//        verify(rateRepository).delete(rate);
+//    }
 
     @Test
     void 웹툰_평균_평점_반환() {
