@@ -30,6 +30,9 @@ jobs:
       - name: Build with Gradle Wrapper
         run: ./gradlew build
 
+      - name: Run Tests with JaCoCo
+        run: ./gradlew test jacocoTestCoverageVerification
+
   docker:
     needs: build  # Gradle 빌드가 끝난 후 실행
     runs-on: ubuntu-latest
