@@ -10,6 +10,9 @@ import com.example.toongallery.domain.rate.service.RateService;
 import com.example.toongallery.domain.user.entity.User;
 import com.example.toongallery.domain.user.repository.UserRepository;
 import com.example.toongallery.domain.webtoon.entity.Webtoon;
+import com.example.toongallery.domain.webtoon.enums.DayOfWeek;
+import com.example.toongallery.domain.webtoon.enums.WebtoonStatus;
+import com.example.toongallery.domain.webtoon.repository.WebtoonRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -17,6 +20,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.dao.OptimisticLockingFailureException;
+import org.springframework.test.util.ReflectionTestUtils;
 
 import java.util.Optional;
 
@@ -40,6 +44,9 @@ class RateServiceTest {
     @Mock
     private EpisodeRepository episodeRepository;
 
+    @Mock
+    private WebtoonRepository webtoonRepository;
+
     private User user1;
     private User user2;
     private Episode episode;
@@ -53,62 +60,74 @@ class RateServiceTest {
         user2 = new User("user2@example.com", "password", "User Two", null, null, null);
         user2.setId(2L);
 
-        webtoon = new Webtoon();
-        webtoon.setId(1L);
-
         episode = Episode.of("Episode 1", 1, "thumbnail_url", webtoon);
         episode.setId(1L);
     }
 
-//    @Test
-//    void rating이_없으면_새로_저장() {
-//        // Given
-//
-//        given(rateRepository.findByUserIdAndEpisodeId(user1.getId(), episode.getId()))
-//                .willReturn(Optional.empty());
-//        given(episodeRepository.findById(episode.getId()))
-//                .willReturn(Optional.of(episode));
-//        given(userRepository.findById(user1.getId()))
-//                .willReturn(Optional.of(user1));
-//
-//        given(rateRepository.save(any(Rate.class)))
-//                .willAnswer(invocation -> {
-//                    Rate rate = invocation.getArgument(0);
-//                    rate.setId(1L);
-//                    return rate;
-//                });
-//
-//        // When
-//        rateService.rateEpisode(user1.getId(), episode.getId(), 5);
-//
-//        // Then
-//        verify(rateRepository).save(any(Rate.class));
-//    }
+    @Test
+    void rating이_없으면_새로_저장() {
+        // Given
 
-//    @Test
-//    void rating이_있으면_수정() {
-//        // Given
-//        Rate existingRate = new Rate();
-//        existingRate.setRates(3);
-//        existingRate.setUser(user1);
-//        existingRate.setEpisode(episode);
-//
-//        given(rateRepository.findByUserIdAndEpisodeId(user1.getId(), episode.getId()))
-//                .willReturn(Optional.of(existingRate));
-//        given(episodeRepository.findById(episode.getId()))
-//                .willReturn(Optional.of(episode));
-//        given(userRepository.findById(user1.getId()))
-//                .willReturn(Optional.of(user1));
-//
-//        // When
-//        rateService.rateEpisode(user1.getId(), episode.getId(), 5);
-//
-//        // Then
-//        verify(rateRepository).save(existingRate);
-//        assertThat(existingRate.getRates()).isEqualTo(5);
-//    }
-//
-//
+        Webtoon webtoon = Webtoon.of("웹툰 제목", "썸네일 URL", "웹툰 설명", DayOfWeek.TUE, WebtoonStatus.ONGOING);
+        ReflectionTestUtils.setField(webtoon, "id", 1L); // ID 강제 설정
+
+        ReflectionTestUtils.setField(episode, "webtoon", webtoon);
+
+        given(webtoonRepository.findById(webtoon.getId()))
+                .willReturn(Optional.of(webtoon));
+
+        given(rateRepository.findByUserIdAndEpisodeId(user1.getId(), episode.getId()))
+                .willReturn(Optional.empty());
+        given(episodeRepository.findById(episode.getId()))
+                .willReturn(Optional.of(episode));
+        given(userRepository.findById(user1.getId()))
+                .willReturn(Optional.of(user1));
+
+        given(rateRepository.save(any(Rate.class)))
+                .willAnswer(invocation -> {
+                    Rate rate = invocation.getArgument(0);
+                    rate.setId(1L);
+                    return rate;
+                });
+
+        // When
+        rateService.rateEpisode(user1.getId(), episode.getId(), 5);
+
+        // Then
+        verify(rateRepository).save(any(Rate.class));
+    }
+
+    @Test
+    void rating이_있으면_수정() {
+        // Given
+        Rate existingRate = new Rate();
+        existingRate.setRates(3);
+        existingRate.setUser(user1);
+        existingRate.setEpisode(episode);
+
+        Webtoon webtoon = Webtoon.of("웹툰 제목", "썸네일 URL", "웹툰 설명", DayOfWeek.TUE, WebtoonStatus.ONGOING);
+        ReflectionTestUtils.setField(webtoon, "id", 1L); // ID 강제 설정
+
+        ReflectionTestUtils.setField(episode, "webtoon", webtoon);
+
+        given(webtoonRepository.findById(webtoon.getId()))
+                .willReturn(Optional.of(webtoon));
+        given(rateRepository.findByUserIdAndEpisodeId(user1.getId(), episode.getId()))
+                .willReturn(Optional.of(existingRate));
+        given(episodeRepository.findById(episode.getId()))
+                .willReturn(Optional.of(episode));
+        given(userRepository.findById(user1.getId()))
+                .willReturn(Optional.of(user1));
+
+        // When
+        rateService.rateEpisode(user1.getId(), episode.getId(), 5);
+
+        // Then
+        verify(rateRepository).save(existingRate);
+        assertThat(existingRate.getRates()).isEqualTo(5);
+    }
+
+
     @Test
     void 평점_삭제_테스트() {
         // Given
