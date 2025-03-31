@@ -1,7 +1,9 @@
 package com.example.toongallery.domain.favorite;
 
+import com.example.toongallery.domain.comment.entity.Comment;
 import com.example.toongallery.domain.common.exception.BaseException;
 import com.example.toongallery.domain.common.exception.ErrorCode;
+import com.example.toongallery.domain.episode.entity.Episode;
 import com.example.toongallery.domain.favorite.entity.Favorite;
 import com.example.toongallery.domain.favorite.repository.FavoriteRepository;
 import com.example.toongallery.domain.favorite.service.FavoriteService;
@@ -18,6 +20,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.test.util.ReflectionTestUtils;
 
 import java.time.LocalDate;
 import java.util.Optional;
@@ -45,13 +48,19 @@ class FavoriteServiceTest {
     private UserRepository userRepository;
 
     private User user;
+
     private Webtoon webtoon;
+
+    private Comment comment;
+
+    private Episode episode;
 
     @BeforeEach
     public void setUp() {
         user = new User("test@example.com", "password", "Test User", LocalDate.of(1990, 1, 1), Gender.MALE, UserRole.ROLE_USER);
 
         webtoon = new Webtoon();
+        webtoon.setFavorite_count(0);
         webtoon.setId(1L);
     }
 
@@ -61,6 +70,8 @@ class FavoriteServiceTest {
         // Given
         given(favoriteRepository.existsByUserIdAndWebtoonId(user.getId(), webtoon.getId()))
                 .willReturn(true);
+        given(webtoonRepository.findById(webtoon.getId()))
+                .willReturn(Optional.of(webtoon));
         willDoNothing().given(favoriteRepository).deleteByUserIdAndWebtoonId(user.getId(), webtoon.getId());
 
         // When
@@ -104,7 +115,7 @@ class FavoriteServiceTest {
         // When & Then
         assertThatThrownBy(() -> favoriteService.toggle(user.getId(), webtoon.getId()))
                 .isInstanceOf(BaseException.class)
-                .hasMessage(ErrorCode.COMMENT_NOT_EXIST.getMessage());
+                .hasMessage(ErrorCode.WEBTOON_NOT_FOUND.getMessage());
     }
 
     @Test

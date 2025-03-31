@@ -37,7 +37,7 @@ public class FavoriteService {
                 if (favoriteRepository.existsByUserIdAndWebtoonId(userId, webtoonId)) {
                     favoriteRepository.deleteByUserIdAndWebtoonId(userId, webtoonId);
                     Webtoon webtoon = webtoonRepository.findById(webtoonId)
-                            .orElseThrow(() -> new BaseException(ErrorCode.COMMENT_NOT_EXIST, null));
+                            .orElseThrow(() -> new BaseException(ErrorCode.WEBTOON_NOT_FOUND, null));
                     webtoon.decreaseLikeCount();
 
                     webtoonRepository.save(webtoon);
@@ -46,7 +46,7 @@ public class FavoriteService {
 
                 // 웹툰, 유저 정보 조회
                 Webtoon webtoon = webtoonRepository.findById(webtoonId)
-                        .orElseThrow(() -> new BaseException(ErrorCode.COMMENT_NOT_EXIST, null));
+                        .orElseThrow(() -> new BaseException(ErrorCode.WEBTOON_NOT_FOUND, null));
                 User user = userRepository.findById(userId)
                         .orElseThrow(() -> new BaseException(ErrorCode.USER_NOT_EXIST, null));
 
