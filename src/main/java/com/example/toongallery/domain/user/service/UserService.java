@@ -20,14 +20,14 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
 
     @Transactional(readOnly = true)
-    public UserResponse getUser(Long userId){
-        User user = userRepository.findById(userId).orElseThrow(() -> new BaseException(ErrorCode.USER_NOT_EXIST,null));
+    public UserResponse getUser(Long userId) {
+        User user = userRepository.findById(userId).orElseThrow(() -> new BaseException(ErrorCode.USER_NOT_EXIST, null));
         return UserResponse.of(user);
     }
 
     @Transactional
     public UserResponse updateUser(Long userId, UserUpdateRequest request) {
-        User user = userRepository.findById(userId).orElseThrow(() -> new BaseException(ErrorCode.USER_NOT_EXIST,null));
+        User user = userRepository.findById(userId).orElseThrow(() -> new BaseException(ErrorCode.USER_NOT_EXIST, null));
 
         if (request.getEmail() != null && !request.getEmail().isBlank()) {
             user.updateEmail(request.getEmail());
@@ -44,7 +44,7 @@ public class UserService {
 
     @Transactional
     public void updatePassword(Long userId, PasswordChangeRequest request) {
-        User user = userRepository.findById(userId).orElseThrow(() -> new BaseException(ErrorCode.USER_NOT_EXIST,null));
+        User user = userRepository.findById(userId).orElseThrow(() -> new BaseException(ErrorCode.USER_NOT_EXIST, null));
 
         if (!passwordEncoder.matches(request.getOldPassword(), user.getPassword())) {
             throw new BaseException(ErrorCode.PASSWORD_MISMATCH, null);
@@ -60,7 +60,7 @@ public class UserService {
 
     @Transactional
     public void deleteUser(Long userId) {
-        User user = userRepository.findById(userId).orElseThrow(() -> new BaseException(ErrorCode.USER_NOT_EXIST,null));
+        User user = userRepository.findById(userId).orElseThrow(() -> new BaseException(ErrorCode.USER_NOT_EXIST, null));
         user.delete();
     }
 }

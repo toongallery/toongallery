@@ -4,6 +4,7 @@ import com.example.toongallery.domain.common.dto.AuthUser;
 import com.example.toongallery.domain.webtoon.dto.request.WebtoonSaveRequest;
 import com.example.toongallery.domain.webtoon.dto.response.WebtoonPopularResponse;
 import com.example.toongallery.domain.webtoon.dto.response.WebtoonResponse;
+import com.example.toongallery.domain.webtoon.entity.Webtoon;
 import com.example.toongallery.domain.webtoon.service.WebtoonService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -34,16 +35,7 @@ public class WebtoonController {
     }
 
     //웹툰 전체 조회
-    @GetMapping
-    public ResponseEntity<Page<WebtoonResponse>> getWebtoons(
-            @RequestParam(defaultValue = "1") int page,
-            @RequestParam(defaultValue = "10") int size
-    ){
-        return ResponseEntity.ok(webtoonService.getWebtoons(page, size));
-    }
-
-    //웹툰 검색(캐시 미적용)
-    @GetMapping("/v1/search")
+    @GetMapping("/search")
     public ResponseEntity<Page<WebtoonResponse>> searchWebtoons(
             @RequestParam(required = false) String keyword,
             @RequestParam(required = false) List<String> genres,
@@ -95,5 +87,11 @@ public class WebtoonController {
     public ResponseEntity<List<WebtoonPopularResponse>> getPopularWebtoons(){
         List<WebtoonPopularResponse> popularWebtoons = webtoonService.getPopularWebtoons();
         return ResponseEntity.ok(popularWebtoons);
+    }
+
+    @GetMapping("/{webtoonId}/rate")
+    public Double getAverageRate(@PathVariable Long webtoonId) {
+        Webtoon webtoon = webtoonService.getWebtoonWithAverageRate(webtoonId);
+        return webtoon.getRate();
     }
 }

@@ -7,7 +7,8 @@ import java.util.Arrays;
 
 
 public enum Gender {
-    MALE,FEMALE;
+    MALE, FEMALE;
+
     public static Gender of(String gender) {
         return Arrays.stream(Gender.values())
                 .filter(g -> g.name().equalsIgnoreCase(gender))

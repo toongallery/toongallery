@@ -29,7 +29,7 @@ public class Author {
         this.webtoon = webtoon;
     }
 
-    public Long getUserId(){
+    public Long getUserId() {
         return user.getId();
     }
 }

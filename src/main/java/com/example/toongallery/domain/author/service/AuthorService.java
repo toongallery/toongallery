@@ -23,14 +23,14 @@ public class AuthorService {
     @Transactional
     public void createAuthors(Webtoon webtoon, List<User> authors) {
         List<Author> authorList = authors.stream()
-                .map(author->new Author(author, webtoon))
+                .map(author -> new Author(author, webtoon))
                 .collect(Collectors.toList());
 
         authorRepository.saveAll(authorList);
     }
 
     @Transactional(readOnly = true)
-    public List<String> getAuthorNamesByWebtoonId(Long webtoonId){
+    public List<String> getAuthorNamesByWebtoonId(Long webtoonId) {
         List<Author> authors = authorRepository.findByWebtoonId(webtoonId);
         List<Long> userIds = authors.stream()
                 .map(Author::getUserId)

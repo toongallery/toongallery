@@ -33,14 +33,31 @@ public class Comment extends BaseEntity {
     @JoinColumn(name = "parent_id")
     private Comment parent;
 
+    private int likeCount;
+
     public Comment(Episode episode, User user, String content, Comment parent) {
         this.episode = episode;
         this.user = user;
         this.content = content;
         this.parent = parent;
+        this.likeCount = 0;
+    }
+
+    public static Comment of(Episode episode, User user, String content, Comment parent) {
+        return new Comment(episode, user, content, parent);
     }
 
     public void updateContent(String content) {
         this.content = content;
+    }
+
+    public void increaseLikeCount() {
+        this.likeCount++;
+    }
+
+    public void decreaseLikeCount() {
+        if (this.likeCount > 0) {
+            this.likeCount--;
+        }
     }
 }

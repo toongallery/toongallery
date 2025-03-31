@@ -12,10 +12,11 @@ import lombok.*;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "rates")
+@Table(uniqueConstraints = {@UniqueConstraint(columnNames = {"user_id", "episode_id"})}, name = "rates")
 public class Rate extends BaseEntity {
 
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     private Integer rates;
@@ -28,5 +29,8 @@ public class Rate extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
+
+    @Version
+    private Long version;
 
 }
