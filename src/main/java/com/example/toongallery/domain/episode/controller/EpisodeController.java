@@ -77,4 +77,12 @@ public class EpisodeController {
         return ResponseEntity.ok(response);
     }
 
+    @DeleteMapping("/webtoons/{webtoonId}/episodes/{episodeId}")
+    public ResponseEntity<Void> deleteEpisode(
+            @PathVariable Long webtoonId,
+            @PathVariable Long episodeId
+    ) {
+        episodeService.deleteEpisode(webtoonId, episodeId);
+        return ResponseEntity.noContent().build();
+    }
 }

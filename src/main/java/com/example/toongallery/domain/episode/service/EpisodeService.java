@@ -184,4 +184,19 @@ public class EpisodeService {
         return new EpisodeImageUpdateResponse(imageUrls);
     }
 
+    public void deleteEpisode(Long webtoonId, Long episodeId) {
+        // 1. 에피소드 존재 확인
+        Episode episode = episodeRepository.findByIdAndWebtoonId(episodeId, webtoonId)
+                .orElseThrow(() -> new BaseException(ErrorCode.EPISODE_NOT_FOUND, "회차 없음"));
+
+        // 2. 연결된 이미지들 S3 + DB에서 삭제
+        imageService.deleteEpisodeImages(episodeId);
+
+        // 3. 에피소드 썸네일 S3에서 삭제
+        imageService.deleteEpisodeThumbnail(webtoonId, episode.getEpisodeNumber());
+
+        // 4. 에피소드 엔티티 삭제
+        episodeRepository.delete(episode);
+    }
+    
 }
