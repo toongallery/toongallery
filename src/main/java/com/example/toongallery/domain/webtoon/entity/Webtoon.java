@@ -37,7 +37,7 @@ public class Webtoon extends BaseEntity {
     private Double rate;//별점 평점
 
     @ColumnDefault("0")
-    private Integer favorite_count;//좋아요 수
+    private Integer favorite_count = 0;//좋아요 수
 
     @ColumnDefault("0")
     private Integer views = 0;//조회수

@@ -40,7 +40,6 @@ public class Comment extends BaseEntity {
         this.user = user;
         this.content = content;
         this.parent = parent;
-        this.likeCount = 0;
     }
 
     public static Comment of(Episode episode, User user, String content, Comment parent) {

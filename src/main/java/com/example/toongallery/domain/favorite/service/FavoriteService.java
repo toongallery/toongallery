@@ -13,6 +13,7 @@ import org.springframework.dao.OptimisticLockingFailureException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Optional;
 import java.util.concurrent.ThreadLocalRandom;
 
 @Service
@@ -38,6 +39,7 @@ public class FavoriteService {
                     favoriteRepository.deleteByUserIdAndWebtoonId(userId, webtoonId);
                     Webtoon webtoon = webtoonRepository.findById(webtoonId)
                             .orElseThrow(() -> new BaseException(ErrorCode.WEBTOON_NOT_FOUND, null));
+                    webtoon.setFavorite_count(Optional.ofNullable(webtoon.getFavorite_count()).orElse(0));
                     webtoon.decreaseLikeCount();
 
                     webtoonRepository.save(webtoon);
@@ -58,7 +60,7 @@ public class FavoriteService {
 
 
                 favoriteRepository.save(favorite);
-
+                webtoon.setFavorite_count(Optional.ofNullable(webtoon.getFavorite_count()).orElse(0));
                 webtoon.increaseLikeCount();
                 webtoonRepository.save(webtoon);
                 return true;

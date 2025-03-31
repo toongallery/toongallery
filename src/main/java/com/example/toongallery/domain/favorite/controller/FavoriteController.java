@@ -20,7 +20,7 @@ public class FavoriteController {
     @PostMapping("/{webtoonId}")
     public ResponseEntity<FavoriteResponse> toggle(@PathVariable Long webtoonId, @RequestParam Long userId) {
         boolean isFavorited = favoriteService.toggle(userId, webtoonId);
-        String message = isFavorited ? "좋아요 완료" : "좋아요 취소 완료";
+        String message = isFavorited ? "관심등록 완료" : "관심등록 취소 완료";
         return ResponseEntity.ok(new FavoriteResponse(isFavorited, message));
     }
 

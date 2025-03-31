@@ -9,6 +9,7 @@ import com.example.toongallery.domain.rate.repository.RateRepository;
 import com.example.toongallery.domain.user.entity.User;
 import com.example.toongallery.domain.user.repository.UserRepository;
 import com.example.toongallery.domain.webtoon.entity.Webtoon;
+import com.example.toongallery.domain.webtoon.repository.WebtoonRepository;
 import jakarta.persistence.OptimisticLockException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.OptimisticLockingFailureException;
@@ -29,6 +30,7 @@ public class RateService {
     private static final int MAX_RETRY_COUNT = 3;  // 최대 재시도 횟수
     private static final long RETRY_DELAY_MS = 100; // 재시도 간 대기 시간 (밀리초)
     private static final Random random = new Random(); // 랜덤 객체 생성
+    private final WebtoonRepository webtoonRepository;
 
     @Transactional
     public void rateEpisode(Long userId, Long episodeId, int rate) {
@@ -96,12 +98,13 @@ public class RateService {
                 .orElse(0.0);
     }
 
-    private void updateWebtoonAverageRate(Long webtoonId) {
+    @Transactional
+    public void updateWebtoonAverageRate(Long webtoonId) {
         Double averageRate = rateRepository.findAverageRateByWebtoonId(webtoonId);
+
         if (averageRate != null) {
-            Webtoon webtoon = episodeRepository.findById(webtoonId)
-                    .orElseThrow(() -> new BaseException(ErrorCode.WEBTOON_NOT_FOUND,null))
-                    .getWebtoon();
+            Webtoon webtoon = webtoonRepository.findById(webtoonId)
+                    .orElseThrow(() -> new BaseException(ErrorCode.WEBTOON_NOT_FOUND,null));
             webtoon.setRate(averageRate);
         }
     }
