@@ -2,9 +2,9 @@ name: Java CI with Gradle and Docker
 
 on:
   push:
-    branches: [ "test/user" ]
+    branches: [ "main" ]
   pull_request:
-    branches: [ "test/user" ]
+    branches: [ "main" ]
 
 jobs:
   build:
