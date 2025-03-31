@@ -38,6 +38,7 @@ public class User extends BaseEntity {
     private Gender gender;
 
     @Enumerated(EnumType.STRING)
+    @Column(length = 20)
     private UserRole userRole;
 
     private LocalDateTime deletedAt;

@@ -80,6 +80,8 @@ class LikeServiceTest {
         // Given
         given(likeRepository.existsByUserIdAndCommentId(user1.getId(), comment.getId()))
                 .willReturn(true);
+        given(commentRepository.findById(comment.getId()))
+                .willReturn(Optional.of(comment));
         willDoNothing().given(likeRepository).deleteByUserIdAndCommentId(user1.getId(), comment.getId());
 
         // When
